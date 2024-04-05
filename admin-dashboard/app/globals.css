@@ -1,0 +1,188 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+body {
+  font-family: "Montserrat";
+  overflow-x: hidden;
+  background-color: #E1D7E2;
+}
+
+bgColor {
+  background-color: #38313a;
+}
+
+*:has(.gradient-border),
+*:has(.gradient-border1) {
+  isolation: isolate;
+}
+.text-gradient {
+  background: linear-gradient(to right, #6b4b9f, #e60b8e); 
+  -webkit-text-fill-color: transparent; 
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.normal-gradient-border{
+  position: relative;
+  background-color: inherit;
+}
+.normal-gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: -3px -3px -3px -3px;
+  z-index: -1;
+  background-image: linear-gradient(180deg, #6b4b9f 0%, #e60b8e 100%);
+  border-radius: inherit;
+}
+
+.gradient-border,
+.gradient-border1 {
+  position: relative;
+  background-color: inherit;
+}
+.gradient-border:hover::before,
+.gradient-border1::before {
+  content: "";
+  position: absolute;
+  inset: -3px -3px -3px -3px;
+  z-index: -1;
+  background-image: linear-gradient(180deg, #6b4b9f 0%, #e60b8e 100%);
+  border-radius: inherit;
+}
+
+.gradient {
+  background: linear-gradient(90deg, #6b4b9f 0%, #e60b8e 50%);
+}
+.blob-bottom-right {
+  position: absolute; /* Change from fixed to absolute */
+  bottom: 0;
+  right: 0;
+  width: 400px; /* Adjust the width as needed */
+  height: auto; /* To maintain aspect ratio */
+  z-index: -1; /* Ensure the blob is behind other content */
+}
+
+.veridaq-gradient {
+  background-image: linear-gradient(to right, #694C9F, #EA098D)
+} 
+
+.veridaq-primary-1 {
+  color: #694C9F
+}
+
+.normal-border {
+  border: 3px;
+  border-style: solid;
+  border-color: #694C9F;
+}
+
+/* Override the default scrollbar styles */
+::-webkit-scrollbar {
+  width: 5px; /* Width of the scrollbar */
+}
+
+/* Track (the area where the scrollbar is located) */
+::-webkit-scrollbar-track {
+  background: transparent; /* Make it transparent */
+}
+
+/* Handle (the draggable part of the scrollbar) */
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2); /* Color of the scrollbar handle */
+  border-radius: 10px; /* Rounded corners */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.4); /* Color of the scrollbar handle on hover */
+}
+
+/* Make the scrollbar always visible on hover */
+.chat-box {
+  overflow: auto; /* Enable scrollbar */
+}
+
+.chat-box::-webkit-scrollbar {
+  width: 5px; /* Width of the scrollbar */
+  height: 5px; /* Height of the scrollbar */
+}
+
+.chat-box:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.4); /* Color of the scrollbar handle on hover */
+}
