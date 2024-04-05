@@ -59,11 +59,11 @@ export function Nav() {
             >
               <Image
                 alt="home"
-                src="/assets/icons/home.svg"
+                src="/assets/icons/users.svg"
                 width={20}
                 height={20}
               />
-              Home
+              Veridaq Users
             </Link>
           </li>
           <li className={`gradient-border rounded-md ${pathname === "/veridaq-box" ? 'normal-gradient-border' : ''}`}>
@@ -80,18 +80,18 @@ export function Nav() {
               Veridaq Box
             </Link>
           </li>
-          <li className={`gradient-border rounded-md ${pathname === "/veridaq-issue" ? 'normal-gradient-border' : ''}`}>
+          <li className={`gradient-border rounded-md ${pathname === "/veridaq-revenue" ? 'normal-gradient-border' : ''}`}>
             <Link
-              href="/veridaq-issue"
+              href="/veridaq-revenue"
               className="flex bg-[#38313A] items-center gap-4 text-white font-medium p-4"
             >
               <Image
                 alt="inbox"
-                src="/assets/icons/send.svg"
+                src="/assets/icons/money.svg"
                 width={20}
                 height={20}
               />
-              Veridaq Issue
+              Veridaq Revenue
             </Link>
           </li>
           <li className={`gradient-border rounded-md ${pathname === "/veridaq-store" ? 'normal-gradient-border' : ''}`}>
@@ -146,9 +146,9 @@ export async function Header() {
           {`Welcome to Veridaq, ${name}`}
         </p>
       )}
-      {pathname === "/veridaq-issue" && (
+      {pathname === "/veridaq-revenue" && (
         <p className="text-[32px] font-semibold text-gradient mr-auto">
-          Issue a Direct Veridaq, here.
+          Check Revenues on Veridaq, here.
         </p>
       )}
       {pathname === "/veridaq-box" && (
@@ -163,7 +163,7 @@ export async function Header() {
       )}
       {pathname === "/settings" && (
         <p className="text-[32px] font-semibold text-gradient mr-auto">
-          Configure your Veridaq Account, here.
+          Configure your Veridaq Admin, here.
         </p>
       )}
       <Image
@@ -325,7 +325,7 @@ export function Wallet(){
   return (
     <div className="flex items-center justify-center gap-1">
       <div className="bg-[#554957] px-4 rounded-lg py-4 text-center">
-        <p className="text-sm text-[#FAEBEB] mb-5">Your Wallet Balance:</p>
+        <p className="text-sm text-[#FAEBEB] mb-5 text-center">Balance:</p>
         <p className="text-[32px] text-white font-bold">N43,000.00</p>
       </div>
       <div className="flex-col justify-center items-center text-center text-white">
@@ -487,4 +487,13 @@ export function VeridaqDocument({DocDetails, DocDate}:{DocDetails: string, DocDa
         </div>
       </div>
   )
+}
+
+export function ListCard({ userName, userType }: { userName: string; userType: string }) {
+  return (
+    <div className="flex items-center justify-between bg-[#E1DBEC] text-lg rounded-full card border-4 border-[#C3B8D8] p-5">
+      <p className="flex-grow font-bold">{userName}</p>
+      <p className="ml-auto text-[16px] text-[#694C9F] font-medium">{userType}</p>
+    </div>
+  );
 }
