@@ -2,31 +2,40 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { signOut } from "@/lib/actions/login.action";
-import getSession from "@/lib/actions/server-hooks/getsession.action";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from 'react';
+
 import { SessionData } from "@/lib/iron-session/session";
+import { signOut } from "@/lib/actions/login.action";
+import getSession from "@/lib/actions/server-hooks/getsession.action";
+
 
 export function useSession() {
   const [session, setSession] = useState<SessionData | null>(null);
 
   useEffect(() => {
-    async function fetchSession() {
-      try {
-        const sessionData = await getSession();
-        setSession(sessionData);
-      } catch (error) {
-        console.error('Error getting session:', error);
-      }
-    }
+    const fetchSession = () => {
+      fetch('/api/clientsession/')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch session data');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log(data)
+          setSession(data);
+        })
+        .catch(error => {
+          console.error('Error getting session:', error);
+        });
+    };
 
     fetchSession();
   }, []);
-
+  console.log(session)
   return session;
 }
-
 
 
 // This is the Nav
@@ -126,7 +135,8 @@ const handleSignOut = async () => {
 
 export async function Header() {
   const pathname = usePathname()
-  // const session = useSession()
+  // const session = getSession()
+  // console.log(session)
   const name = "session?.firstName";
 
   return (

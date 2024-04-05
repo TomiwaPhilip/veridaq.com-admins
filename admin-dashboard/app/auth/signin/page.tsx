@@ -18,7 +18,9 @@ import {
   FormMessage,
 } from "@/components/form/form";
 import { Input } from "@/components/form/input";
+
 import { signIn } from "@/lib/actions/login.action";
+import { useSession } from "@/components/shared/shared";  
 
 import { NoOutlineButtonBig } from "@/components/shared/buttons";
 
@@ -32,6 +34,7 @@ export default function SignIn() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState("");
+  const session = useSession();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -58,15 +61,9 @@ export default function SignIn() {
     <main className="text-white">
       <div className="mt-[30px] pb-5">
         <p className="text-center text-2xl font-bold">
-          Sign in to Veridaq.com
+          Sign in to Veridaq.com Admin {session?.isLoggedIn as boolean}
         </p>
-        <div className="max-w-md mx-auto px-10 sm:px-6 lg:px-8 pt-8">
-          <GoogleButton />
-          <br />
-          <LinkedinButton />
-          <div className="flex items-center justify-center text-center">
-            <hr className="my-8 py-2 w-[60%]" />
-          </div>
+        <div className="max-w-md mx-auto px-10 sm:px-6 lg:px-8 pt-8 h-full">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit((data) => onSubmit(data))}

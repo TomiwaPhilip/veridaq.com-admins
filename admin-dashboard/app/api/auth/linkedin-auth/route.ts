@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { NextResponse } from 'next/server';
 
 import connectToDB from '@/lib/model/database';
-import Organization from '@/lib/utils/organizationSchema';
+import Organization from '@/lib/utils/adminSchema';
 import Role from '@/lib/utils/roleSchema';
 import { saveSession } from '@/lib/utils';
 import { exchangeCodeForToken, getUserProfile } from '@/lib/actions/server-hooks/linkedin-auth.action';

@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { getGoogleAccessToken, getGoogleUserInfo } from "@/lib/actions/server-hooks/google-auth.action";
 import connectToDB from '@/lib/model/database';
 import Role from '@/lib/utils/roleSchema';
-import Organization from "@/lib/utils/organizationSchema";
+import Organization from "@/lib/utils/adminSchema";
 import { saveSession } from '@/lib/utils';
 
 
