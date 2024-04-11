@@ -60,6 +60,78 @@ const StudentshipStatus: React.FC<studentStatusProps> = ({ docId }) => {
 
   console.log(form.formState.errors);
 
+  useEffect(() => {
+    const fetchWorkReferenceDoc = async () => {
+      if (!docId) return;
+      try {
+        const doc = await getWorkReferenceById(docId);
+        console.log("Fetched document:", doc); // Log fetched document
+        // Set default values for form fields if available
+        if (doc) {
+          const {
+            firstName,
+            lastName,
+            middleName,
+            employeeType,
+            subType,
+            staffId,
+            designation,
+            department,
+            notableAchievement,
+            jobFunction,
+            personalitySummary,
+            workStartDate,
+            workEndDate,
+            orgName,
+            orgAddress,
+            orgPostalCode,
+            orgCountry,
+            orgEmail,
+            orgPhone,
+            contactName,
+            contactAddress,
+            contactPostalCode,
+            contactCountry,
+            contactEmail,
+            contactPhone,
+          } = doc;
+          form.reset({
+            firstName,
+            lastName,
+            middleName,
+            employeeType,
+            subType,
+            staffId,
+            designation,
+            department,
+            notableAchievement,
+            jobFunction,
+            personalitySummary,
+            workStartDate,
+            workEndDate,
+            orgName,
+            orgAddress,
+            orgPostalCode,
+            orgCountry,
+            orgEmail,
+            orgPhone,
+            contactName,
+            contactAddress,
+            contactPostalCode,
+            contactCountry,
+            contactEmail,
+            contactPhone,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching organizations:", error);
+        // Handle error state if needed
+      }
+    };
+
+    fetchWorkReferenceDoc();
+  }, [docId]);
+
   const handleImage = async (
     e: ChangeEvent<HTMLInputElement>,
     fieldChange: (value: string) => void,
@@ -99,7 +171,19 @@ const StudentshipStatus: React.FC<studentStatusProps> = ({ docId }) => {
     console.log("I want to submit");
 
     try {
-      const create = await createOrUpdateStudentshipStatus(data);
+      const create = await createOrUpdateStudentshipStatus({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        middleName: data.middleName,
+        currentLevel: data.currentLevel,
+        courseOfStudy: data.courseOfStudy,
+        studentId: data.studentId,
+        info: data.info, // Optional info field
+        faculty: data.faculty,
+        entryYear: data.entryYear,
+        exitYear: data.exitYear, // Optional exitYear field
+        image: data.image,
+      });
       setRequestResult(create);
       if (create) {
         handleNextStep();
