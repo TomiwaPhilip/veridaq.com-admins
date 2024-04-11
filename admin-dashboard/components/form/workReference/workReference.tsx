@@ -161,7 +161,7 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
         contactCountry: data.contactCountry,
         contactEmail: data.contactEmail,
         contactPhone: data.contactPhone,
-        id: docId as string,
+        _id: docId as string,
       });
       setRequestResult(create);
       if (create) {

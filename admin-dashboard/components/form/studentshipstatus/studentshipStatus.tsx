@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, ChangeEvent, useRef } from "react";
+import React, { useState, ChangeEvent, useRef, useEffect } from "react";
 import {
   Form,
   FormControl,
@@ -33,7 +33,7 @@ import { z } from "zod";
 import Image from "next/image";
 import { upload } from "@vercel/blob/client";
 
-import { createOrUpdateStudentshipStatus } from "@/lib/actions/request.action";
+import { createOrUpdateStudentshipStatus, getStudentshipStatusById } from "@/lib/actions/request.action";
 import { StudentshipStatusValidation2 } from "@/lib/validations/studentshipstatus";
 import { SuccessMessage, ErrorMessage } from "@/components/shared/shared";
 
@@ -61,10 +61,10 @@ const StudentshipStatus: React.FC<studentStatusProps> = ({ docId }) => {
   console.log(form.formState.errors);
 
   useEffect(() => {
-    const fetchWorkReferenceDoc = async () => {
+    const fetchStudentshipStatusDoc = async () => {
       if (!docId) return;
       try {
-        const doc = await getWorkReferenceById(docId);
+        const doc = await getStudentshipStatusById(docId);
         console.log("Fetched document:", doc); // Log fetched document
         // Set default values for form fields if available
         if (doc) {
@@ -72,16 +72,14 @@ const StudentshipStatus: React.FC<studentStatusProps> = ({ docId }) => {
             firstName,
             lastName,
             middleName,
-            employeeType,
-            subType,
-            staffId,
-            designation,
-            department,
-            notableAchievement,
-            jobFunction,
-            personalitySummary,
-            workStartDate,
-            workEndDate,
+            currentLevel,
+            courseOfStudy,
+            studentId,
+            info, // Optional info field
+            faculty,
+            entryYear,
+            exitYear, // Optional exitYear field
+            image,
             orgName,
             orgAddress,
             orgPostalCode,
@@ -99,16 +97,14 @@ const StudentshipStatus: React.FC<studentStatusProps> = ({ docId }) => {
             firstName,
             lastName,
             middleName,
-            employeeType,
-            subType,
-            staffId,
-            designation,
-            department,
-            notableAchievement,
-            jobFunction,
-            personalitySummary,
-            workStartDate,
-            workEndDate,
+            currentLevel,
+            courseOfStudy,
+            studentId,
+            info, // Optional info field
+            faculty,
+            entryYear,
+            exitYear, // Optional exitYear field
+            image,
             orgName,
             orgAddress,
             orgPostalCode,
@@ -129,7 +125,7 @@ const StudentshipStatus: React.FC<studentStatusProps> = ({ docId }) => {
       }
     };
 
-    fetchWorkReferenceDoc();
+    fetchStudentshipStatusDoc();
   }, [docId]);
 
   const handleImage = async (
@@ -183,6 +179,19 @@ const StudentshipStatus: React.FC<studentStatusProps> = ({ docId }) => {
         entryYear: data.entryYear,
         exitYear: data.exitYear, // Optional exitYear field
         image: data.image,
+        orgName: data.orgName,
+        orgAddress: data.orgAddress,
+        orgPostalCode: data.orgPostalCode,
+        orgCountry: data.orgCountry,
+        orgEmail: data.orgEmail,
+        orgPhone: data.orgName,
+        contactName: data.contactName,
+        contactAddress: data.contactAddress,
+        contactPostalCode: data.contactPostalCode,
+        contactCountry: data.contactCountry,
+        contactEmail: data.contactEmail,
+        contactPhone: data.contactPhone,
+        _id: docId as string,
       });
       setRequestResult(create);
       if (create) {

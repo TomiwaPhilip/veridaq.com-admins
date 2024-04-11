@@ -181,6 +181,7 @@ interface StudentshipParams {
   contactCountry: string;
   contactEmail: string;
   contactPhone: string;
+  _id: string;
 }
 
 // Define the createStudentshipStatus function
@@ -191,12 +192,12 @@ export async function createOrUpdateStudentshipStatus(
     // Connect to the database
     connectToDB();
 
-    console.log(params.id);
+    console.log(params._id);
 
     // If id is provided, find and update the document
-    if (params.id) {
+    if (params._id) {
       await StudentshipStatusAdmin.findByIdAndUpdate(
-        params.id,
+        params._id,
         {
           firstName: params.firstName,
           lastName: params.lastName,
