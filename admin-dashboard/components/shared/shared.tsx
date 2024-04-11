@@ -3,40 +3,31 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 import { SessionData } from "@/lib/iron-session/session";
 import { signOut } from "@/lib/actions/login.action";
 import getSession from "@/lib/actions/server-hooks/getsession.action";
-
+import { getSession2 } from "@/lib/actions/server-hooks/getsession.action";
 
 export function useSession() {
   const [session, setSession] = useState<SessionData | null>(null);
 
   useEffect(() => {
-    const fetchSession = () => {
-      fetch('/api/clientsession/')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to fetch session data');
-          }
-          return response.json();
-        })
-        .then(data => {
-          console.log(data)
-          setSession(data);
-        })
-        .catch(error => {
-          console.error('Error getting session:', error);
-        });
-    };
+    async function fetchSession() {
+      try {
+        const sessionData = await getSession2();
+        setSession(sessionData);
+      } catch (error) {
+        console.error("Error getting session:", error);
+      }
+    }
 
     fetchSession();
   }, []);
-  console.log(session)
+
   return session;
 }
-
 
 // This is the Nav
 export function Nav() {
@@ -52,7 +43,9 @@ export function Nav() {
       />
       <div className="my-auto">
         <ul className="list-none flex flex-col gap-2">
-          <li className={`gradient-border rounded-md ${pathname === "/" ? 'normal-gradient-border' : ''}`}>
+          <li
+            className={`gradient-border rounded-md ${pathname === "/" ? "normal-gradient-border" : ""}`}
+          >
             <Link
               href="/"
               className="flex bg-[#38313A] items-center gap-4 text-white font-medium p-4"
@@ -66,7 +59,9 @@ export function Nav() {
               Veridaq Users
             </Link>
           </li>
-          <li className={`gradient-border rounded-md ${pathname === "/veridaq-box" ? 'normal-gradient-border' : ''}`}>
+          <li
+            className={`gradient-border rounded-md ${pathname === "/veridaq-box" ? "normal-gradient-border" : ""}`}
+          >
             <Link
               href="/veridaq-box"
               className="flex bg-[#38313A] items-center gap-4 text-white font-medium p-4"
@@ -80,7 +75,9 @@ export function Nav() {
               Veridaq Box
             </Link>
           </li>
-          <li className={`gradient-border rounded-md ${pathname === "/veridaq-revenue" ? 'normal-gradient-border' : ''}`}>
+          <li
+            className={`gradient-border rounded-md ${pathname === "/veridaq-revenue" ? "normal-gradient-border" : ""}`}
+          >
             <Link
               href="/veridaq-revenue"
               className="flex bg-[#38313A] items-center gap-4 text-white font-medium p-4"
@@ -94,7 +91,9 @@ export function Nav() {
               Veridaq Revenue
             </Link>
           </li>
-          <li className={`gradient-border rounded-md ${pathname === "/veridaq-store" ? 'normal-gradient-border' : ''}`}>
+          <li
+            className={`gradient-border rounded-md ${pathname === "/veridaq-store" ? "normal-gradient-border" : ""}`}
+          >
             <Link
               href="/veridaq-store"
               className="flex bg-[#38313A] items-center gap-4 text-white font-medium p-4"
@@ -108,7 +107,9 @@ export function Nav() {
               Veridaq Store
             </Link>
           </li>
-          <li className={`gradient-border rounded-md ${pathname === "/settings" ? 'normal-gradient-border' : ''}`}>
+          <li
+            className={`gradient-border rounded-md ${pathname === "/settings" ? "normal-gradient-border" : ""}`}
+          >
             <Link
               href="/settings"
               className="flex bg-[#38313A] items-center gap-4 text-white font-medium p-4"
@@ -132,12 +133,11 @@ const handleSignOut = async () => {
   await signOut();
 };
 
-
-export async function Header() {
-  const pathname = usePathname()
-  // const session = getSession()
-  // console.log(session)
-  const name = "session?.firstName";
+export function Header() {
+  const pathname = usePathname();
+  const session = useSession();
+  console.log(session);
+  const name = session?.firstName;
 
   return (
     <header className="flex items-center gap-4">
@@ -172,18 +172,18 @@ export async function Header() {
         width={35}
         height={35}
       />
-        <Image
-          alt="user"
-          src="/assets/images/user.png"
-          width={50}
-          height={50}
-          onClick={handleSignOut}
-          style={{ cursor: 'pointer' }}
-        />
+      <Image
+        alt="user"
+        src={session?.image as string}
+        className="rounded-full aspect-square object-cover normal-border"
+        width={50}
+        height={50}
+        onClick={handleSignOut}
+        style={{ cursor: "pointer" }}
+      />
     </header>
   );
 }
-
 
 // Cards for the home page
 export function Card({
@@ -200,7 +200,12 @@ export function Card({
   return (
     <div
       className="card rounded-lg p-6 text-[#38313A]"
-      style={{ backgroundColor: bgColor, borderColor: outlineColor, borderStyle: "solid", borderWidth: "3px" }}
+      style={{
+        backgroundColor: bgColor,
+        borderColor: outlineColor,
+        borderStyle: "solid",
+        borderWidth: "3px",
+      }}
     >
       <p className="font-bold text-[24px] mt-4">{heading}</p>
       <p className="text-[20px]">{paragraph}</p>
@@ -231,7 +236,13 @@ export function Card2({
   return (
     <div
       className="card rounded-lg py-[50px] px-5 text-[#38313A] flex items-center justify-center text-center hover:cursor-pointer"
-      style={{ backgroundColor: bgColor, borderColor: outlineColor, borderStyle: "solid", borderWidth: "3px", color: textColor }}
+      style={{
+        backgroundColor: bgColor,
+        borderColor: outlineColor,
+        borderStyle: "solid",
+        borderWidth: "3px",
+        color: textColor,
+      }}
       id={id}
       onClick={handleClick} // Use the new handleClick function
     >
@@ -239,7 +250,6 @@ export function Card2({
     </div>
   );
 }
-
 
 export function Card3({
   heading,
@@ -255,10 +265,21 @@ export function Card3({
   return (
     <div
       className="card rounded-lg text-[#38313A] text-center"
-      style={{ backgroundColor: bgColor, borderColor: outlineColor, borderStyle: "solid", borderWidth: "3px", color: textColor }}
+      style={{
+        backgroundColor: bgColor,
+        borderColor: outlineColor,
+        borderStyle: "solid",
+        borderWidth: "3px",
+        color: textColor,
+      }}
     >
-      <p className="font-bold text-[20px] mt-4 px-1 py-[30px] text-wrap">{heading}</p>
-      <div className="py-2 flex justify-center text-center" style={{backgroundColor: outlineColor}}>
+      <p className="font-bold text-[20px] mt-4 px-1 py-[30px] text-wrap">
+        {heading}
+      </p>
+      <div
+        className="py-2 flex justify-center text-center"
+        style={{ backgroundColor: outlineColor }}
+      >
         <Image
           src={"/assets/icons/icon-command.png"}
           alt="options"
@@ -272,7 +293,7 @@ export function Card3({
 
 export function SearchBar() {
   return (
-      <div className="bg-[#E1D7E2]">
+    <div className="bg-[#E1D7E2]">
       <label
         htmlFor="search"
         className="flex items-center gap-4 gradient-border1 w-max p-2 ml-auto rounded-md mt-8"
@@ -292,12 +313,12 @@ export function SearchBar() {
         />
       </label>
     </div>
-  )
+  );
 }
 
 export function SearchBar2() {
   return (
-      <div className="">
+    <div className="">
       <label
         htmlFor="search"
         className="flex items-center gap-4 bg-[#E1D7E2] border-4 border-[#554957] w-max p-2 ml-auto rounded-md mt-8"
@@ -317,11 +338,10 @@ export function SearchBar2() {
         />
       </label>
     </div>
-  )
+  );
 }
 
-
-export function Wallet(){
+export function Wallet() {
   return (
     <div className="flex items-center justify-center gap-1">
       <div className="bg-[#554957] px-4 rounded-lg py-4 text-center">
@@ -329,26 +349,32 @@ export function Wallet(){
         <p className="text-[32px] text-white font-bold">N43,000.00</p>
       </div>
       <div className="flex-col justify-center items-center text-center text-white">
-        <button type="submit" className="text-[20px] bg-[#EA098D] rounded-full p-1 px-9 mb-[7px] flex items-center justify-center">
-          <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+        <button
+          type="submit"
+          className="text-[20px] bg-[#EA098D] rounded-full p-1 px-9 mb-[7px] flex items-center justify-center"
+        >
+          <div style={{ display: "inline-flex", alignItems: "center" }}>
             <Image
               src={"/assets/icons/plus.png"}
               alt="plus_icon"
               width={30}
               height={30}
             />
-            <span style={{ marginLeft: '5px' }}>Add funds</span>
+            <span style={{ marginLeft: "5px" }}>Add funds</span>
           </div>
         </button>
-        <button type="submit" className="text-[20px] bg-[#694C9F] rounded-full p-1 px-2 flex items-center justify-center">
-          <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+        <button
+          type="submit"
+          className="text-[20px] bg-[#694C9F] rounded-full p-1 px-2 flex items-center justify-center"
+        >
+          <div style={{ display: "inline-flex", alignItems: "center" }}>
             <Image
               src={"/assets/icons/minus.png"}
               alt="minus_icon"
               width={30}
               height={30}
             />
-            <span style={{ marginLeft: '5px' }}>Withdraw funds</span>
+            <span style={{ marginLeft: "5px" }}>Withdraw funds</span>
           </div>
         </button>
       </div>
@@ -356,7 +382,17 @@ export function Wallet(){
   );
 }
 
-export function MessageView({ name, timestamp, message, imgSrc }: { name: string, timestamp: string, message: string, imgSrc: string }) {
+export function MessageView({
+  name,
+  timestamp,
+  message,
+  imgSrc,
+}: {
+  name: string;
+  timestamp: string;
+  message: string;
+  imgSrc: string;
+}) {
   return (
     <div className="flex items-start py-2 border-b border-gray-300">
       <div className="pr-4 flex-shrink-0">
@@ -381,10 +417,15 @@ export function MessageView({ name, timestamp, message, imgSrc }: { name: string
   );
 }
 
-
-
-
-export function MessageCard({ message, timeStamp, bgColor }: { message: string; timeStamp: string; bgColor: string }) {
+export function MessageCard({
+  message,
+  timeStamp,
+  bgColor,
+}: {
+  message: string;
+  timeStamp: string;
+  bgColor: string;
+}) {
   return (
     <div className="bg-[#443B46] rounded-xl p-3 w-[70%]">
       <div className="text-left text-sm font-medium pb-1 text-white">
@@ -397,8 +438,13 @@ export function MessageCard({ message, timeStamp, bgColor }: { message: string; 
   );
 }
 
-
-export function MessageLabel({ imgSrc, name }: { imgSrc: string; name: string }) {
+export function MessageLabel({
+  imgSrc,
+  name,
+}: {
+  imgSrc: string;
+  name: string;
+}) {
   return (
     <div className="absolute top-0 left-0 w-full mt-4 ml-4 mr-2 rounded-lg veridaq-gradient text-white z-10 shadow-md p-2 flex flex-grow items-center">
       <div className="mr-4">
@@ -415,7 +461,7 @@ export function MessageLabel({ imgSrc, name }: { imgSrc: string; name: string })
   );
 }
 
-export function MessageBox(){
+export function MessageBox() {
   return (
     <div className="absolute bottom-0 left-0 w-full m-5">
       <label className="flex items-center gap-4 gradient-border1 bg-[#38313A] w-full rounded-full">
@@ -434,12 +480,11 @@ export function MessageBox(){
         />
       </label>
     </div>
-  )
+  );
 }
 
-
-export function SuccessMessage(){
-  return(
+export function SuccessMessage() {
+  return (
     <div className="flex flex-col items-center justify-center">
       <Image
         src={"/assets/images/checkmark.png"}
@@ -447,13 +492,15 @@ export function SuccessMessage(){
         width={400}
         height={400}
       />
-      <p className="text-[24px] font-semibold text-lg p-3 text-center">Your Veridaq Request is Successful!</p>
+      <p className="text-[24px] font-semibold text-lg p-3 text-center">
+        Your Veridaq Request is Successful!
+      </p>
     </div>
-  )
+  );
 }
 
-export function ErrorMessage(){
-  return(
+export function ErrorMessage() {
+  return (
     <div className="">
       <Image
         src={"/assets/images/checkmark.png"}
@@ -461,39 +508,68 @@ export function ErrorMessage(){
         width={400}
         height={400}
       />
-      <p className="text-[24px] font-semibold">Your Veridaq Request is UnSuccessful! Please try again later</p>
+      <p className="text-[24px] font-semibold">
+        Your Veridaq Request is UnSuccessful! Please try again later
+      </p>
     </div>
-  )
+  );
 }
 
-export function VeridaqDocument({DocDetails, DocDate}:{DocDetails: string, DocDate: string}) {
+export function VeridaqDocument({
+  DocDetails,
+  DocDate,
+  id,
+  docId,
+  onClick,
+}: {
+  DocDetails: string;
+  DocDate: string;
+  id: string;
+  docId: string;
+  onClick: (id: string, docId: string) => void;
+}) {
+  const handleClick = () => {
+    onClick(id, docId); // Pass the id to the onClick handler
+  };
+
   return (
-      <div className="flex items-start gap-3 hover:cursor-pointer">
+    <div
+      className="flex items-start gap-3 pt-4 pb-4 hover:cursor-pointer"
+      onClick={handleClick}
+    >
+      <div className="">
+        <Image
+          src={"/assets/icons/veridaq_icon.svg"}
+          alt="veridaq_icon"
+          width={40}
+          height={40}
+        />
+      </div>
+      <div className="flex-col items-start">
         <div className="">
-          <Image
-            src={"/assets/icons/veridaq_icon.svg"}
-            alt="veridaq_icon"
-            width={40}
-            height={40}
-          />
+          <p>{DocDetails}</p>
         </div>
-        <div className="flex-col items-start">
-          <div className="">
-            <p>{DocDetails}</p>
-          </div>
-            <div className="">
-              <p>{DocDate}</p>
-            </div>
+        <div className="">
+          <p>{DocDate}</p>
         </div>
       </div>
-  )
+    </div>
+  );
 }
 
-export function ListCard({ userName, userType }: { userName: string; userType: string }) {
+export function ListCard({
+  userName,
+  userType,
+}: {
+  userName: string;
+  userType: string;
+}) {
   return (
     <div className="flex items-center justify-between bg-[#E1DBEC] text-lg rounded-full card border-4 border-[#C3B8D8] p-5">
       <p className="flex-grow font-bold">{userName}</p>
-      <p className="ml-auto text-[16px] text-[#694C9F] font-medium">{userType}</p>
+      <p className="ml-auto text-[16px] text-[#694C9F] font-medium">
+        {userType}
+      </p>
     </div>
   );
 }
