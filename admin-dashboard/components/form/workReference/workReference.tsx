@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Form,
   FormControl,
@@ -10,33 +10,36 @@ import {
   FormMessage,
 } from "@/components/form/form";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select"
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-  } from "@/components/ui/popover";
-import { format } from "date-fns"
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/form/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { createOrUpdateWorkReferenceRequest } from "@/lib/actions/request.action"
-import { WorkReferenceValidation2 } from '@/lib/validations/workreference';
+import {
+  createOrUpdateWorkReferenceRequest,
+  getWorkReferenceById,
+} from "@/lib/actions/request.action";
+import { WorkReferenceValidation2 } from "@/lib/validations/workreference";
 import { SuccessMessage, ErrorMessage } from "@/components/shared/shared";
 
 interface WorkReferenceProps {
-    docId?: string | null;
+  docId?: string | null;
 }
 
 const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
@@ -50,15 +53,87 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
   const handlePrevStep = () => {
     setStep(step - 1);
   };
-  console.log(docId)
+  console.log(docId);
   const form = useForm<z.infer<typeof WorkReferenceValidation2>>({
     resolver: zodResolver(WorkReferenceValidation2),
   });
 
-  console.log(form.formState.errors)
+  console.log(form.formState.errors);
+
+  useEffect(() => {
+    const fetchWorkReferenceDoc = async () => {
+      if (!docId) return;
+      try {
+        const doc = await getWorkReferenceById(docId);
+        console.log("Fetched document:", doc); // Log fetched document
+        // Set default values for form fields if available
+        if (doc) {
+          const {
+            firstName,
+            lastName,
+            middleName,
+            employeeType,
+            subType,
+            staffId,
+            designation,
+            department,
+            notableAchievement,
+            jobFunction,
+            personalitySummary,
+            workStartDate,
+            workEndDate,
+            orgName,
+            orgAddress,
+            orgPostalCode,
+            orgCountry,
+            orgEmail,
+            orgPhone,
+            contactName,
+            contactAddress,
+            contactPostalCode,
+            contactCountry,
+            contactEmail,
+            contactPhone,
+          } = doc;
+          form.reset({
+            firstName,
+            lastName,
+            middleName,
+            employeeType,
+            subType,
+            staffId,
+            designation,
+            department,
+            notableAchievement,
+            jobFunction,
+            personalitySummary,
+            workStartDate,
+            workEndDate,
+            orgName,
+            orgAddress,
+            orgPostalCode,
+            orgCountry,
+            orgEmail,
+            orgPhone,
+            contactName,
+            contactAddress,
+            contactPostalCode,
+            contactCountry,
+            contactEmail,
+            contactPhone,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching organizations:", error);
+        // Handle error state if needed
+      }
+    };
+
+    fetchWorkReferenceDoc();
+  }, [docId]);
 
   const onSubmit = async (data: z.infer<typeof WorkReferenceValidation2>) => {
-    console.log("I want to submit")
+    console.log("I want to submit");
     try {
       const create = await createOrUpdateWorkReferenceRequest({
         firstName: data.firstName,
@@ -74,6 +149,19 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
         notableAchievement: data.notableAchievement,
         jobFunction: data.jobFunction,
         personalitySummary: data.personalitySummary,
+        orgName: data.orgName,
+        orgAddress: data.orgAddress,
+        orgPostalCode: data.orgPostalCode,
+        orgCountry: data.orgCountry,
+        orgEmail: data.orgEmail,
+        orgPhone: data.orgName,
+        contactName: data.contactName,
+        contactAddress: data.contactAddress,
+        contactPostalCode: data.contactPostalCode,
+        contactCountry: data.contactCountry,
+        contactEmail: data.contactEmail,
+        contactPhone: data.contactPhone,
+        id: docId as string,
       });
       setRequestResult(create);
       if (create) {
@@ -87,531 +175,588 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
 
   return (
     <main>
-            <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-            {step === 1 && (
-                <div>
-                    <p className='text-xl px-8'>Personal Details</p>
-                <div className='mt-4 w-full px-8'>
-                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4 justify-center'>
-                    <FormField
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          {step === 1 && (
+            <div>
+              <p className="text-xl px-8">Personal Details</p>
+              <div className="mt-4 w-full px-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center">
+                  <FormField
                     control={form.control}
                     name="firstName"
                     render={({ field }) => (
-                        <FormItem className="flex-1">
+                      <FormItem className="flex-1">
                         <FormLabel className="font-medium text-[16px]">
-                            Firstname
+                          Firstname
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="John" {...field} />
+                          <Input placeholder="John" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                    <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="lastName"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Lastname
+                          Lastname
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="Doe" {...field} />
+                          <Input placeholder="Doe" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                    <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="middleName"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Middle Name
+                          Middle Name
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="Fred" {...field} />
+                          <Input placeholder="Fred" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="employeeType"
-                        render={({ field }) => (
-                            <FormItem className='w-full'>
-                            <FormLabel className='font-medium text-[16px]'>Employee Type</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select a Employee Type" />
-                                </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                <SelectItem value="Regular">Regular</SelectItem>
-                                <SelectItem value="Non-Regular">Non-Regular e.g. Adhoc</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                        />
-                    <FormField
-                        control={form.control}
-                        name="subType"
-                        render={({ field }) => (
-                            <FormItem className='w-full'>
-                            <FormLabel className='font-medium text-[16px]'>Sub Type</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select a Sub Type" />
-                                </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                <SelectItem value="Current">Current</SelectItem>
-                                <SelectItem value="Former">Former</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                        /> 
-                    <FormField
+                  />
+                  <FormField
+                    control={form.control}
+                    name="employeeType"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel className="font-medium text-[16px]">
+                          Employee Type
+                        </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a Employee Type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Regular">Regular</SelectItem>
+                            <SelectItem value="Non-Regular">
+                              Non-Regular e.g. Adhoc
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="subType"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel className="font-medium text-[16px]">
+                          Sub Type
+                        </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a Sub Type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Current">Current</SelectItem>
+                            <SelectItem value="Former">Former</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
                     control={form.control}
                     name="staffId"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Staff ID
+                          Staff ID
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="D11256" {...field} />
+                          <Input placeholder="D11256" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                    <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="designation"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Designation
+                          Designation
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="Snr." {...field} />
+                          <Input placeholder="Snr." {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
+                  />
                 </div>
                 <div className="mt-5 flex items-center justify-center">
-                    {/* <div className="text-left left">
+                  {/* <div className="text-left left">
                      <button type="button" className='mr-auto md:mr-0' onClick={handlePrevStep}>Previous</button>
                     </div> */}
-                    <div className="text-right right">
-                      <button type="button" className='bg-[#38313A] px-7 py-5 rounded-md text-white' onClick={handleNextStep}>Continue</button>
-                    </div>
+                  <div className="text-right right">
+                    <button
+                      type="button"
+                      className="bg-[#38313A] px-7 py-5 rounded-md text-white"
+                      onClick={handleNextStep}
+                    >
+                      Continue
+                    </button>
+                  </div>
                 </div>
-                </div>             
-                <p className='p-2'>{`Step ${step}`}</p>  
+              </div>
+              <p className="p-2">{`Step ${step}`}</p>
             </div>
-            )}
-            {step === 2 && (
-              <div>
-                <p className='text-xl px-8'>Personal Details</p>
-                <div className='mt-4 w-full px-8'>
-                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4 justify-center'>
+          )}
+          {step === 2 && (
+            <div>
+              <p className="text-xl px-8">Personal Details</p>
+              <div className="mt-4 w-full px-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center">
                   <FormField
                     control={form.control}
                     name="workStartDate"
                     render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                        <FormLabel className="font-medium text-[16px]">Work Start Date</FormLabel>
+                      <FormItem className="flex flex-col">
+                        <FormLabel className="font-medium text-[16px]">
+                          Work Start Date
+                        </FormLabel>
                         <Popover>
-                            <PopoverTrigger asChild>
+                          <PopoverTrigger asChild>
                             <FormControl>
-                                <Button
+                              <Button
                                 variant={"outline"}
                                 className={cn(
-                                    "flex h-12 w-full normal-border bg-[#C3B8D8] pt-10 rounded-lg px-1 py-3 placeholder:text-gray-500 text-left disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-950",
-                                    !field.value && "text-muted-foreground"
+                                  "flex h-12 w-full normal-border bg-[#C3B8D8] pt-10 rounded-lg px-1 py-3 placeholder:text-gray-500 text-left disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-950",
+                                  !field.value && "text-muted-foreground",
                                 )}
-                                >
+                              >
                                 {field.value ? (
-                                    format(field.value, "PPP")
+                                  format(field.value, "PPP")
                                 ) : (
-                                    <span>Pick a date</span>
+                                  <span>Pick a date</span>
                                 )}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                </Button>
+                              </Button>
                             </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
-                                mode="single"
-                                selected={field.value}
-                                onSelect={field.onChange}
-                                disabled={(date) =>
-                                date > new Date() || date < new Date("1900-01-01")
-                                }
-                                initialFocus
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) =>
+                                date > new Date() ||
+                                date < new Date("1900-01-01")
+                              }
+                              initialFocus
                             />
-                            </PopoverContent>
+                          </PopoverContent>
                         </Popover>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="workEndDate"
                     render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                        <FormLabel className="font-medium text-[16px]">Work End Date</FormLabel>
+                      <FormItem className="flex flex-col">
+                        <FormLabel className="font-medium text-[16px]">
+                          Work End Date
+                        </FormLabel>
                         <Popover>
-                            <PopoverTrigger asChild>
+                          <PopoverTrigger asChild>
                             <FormControl>
-                                <Button
+                              <Button
                                 variant={"outline"}
                                 className={cn(
-                                    "flex h-12 w-full normal-border bg-[#C3B8D8] pt-10 rounded-lg px-1 py-3 placeholder:text-gray-500 text-left disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-950",
-                                    !field.value && "text-muted-foreground"
+                                  "flex h-12 w-full normal-border bg-[#C3B8D8] pt-10 rounded-lg px-1 py-3 placeholder:text-gray-500 text-left disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-950",
+                                  !field.value && "text-muted-foreground",
                                 )}
-                                >
+                              >
                                 {field.value ? (
-                                    format(field.value, "PPP")
+                                  format(field.value, "PPP")
                                 ) : (
-                                    <span>Pick a date</span>
+                                  <span>Pick a date</span>
                                 )}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                </Button>
+                              </Button>
                             </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
-                                mode="single"
-                                selected={field.value}
-                                onSelect={field.onChange}
-                                disabled={(date) =>
-                                date > new Date() || date < new Date("1900-01-01")
-                                }
-                                initialFocus
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) =>
+                                date > new Date() ||
+                                date < new Date("1900-01-01")
+                              }
+                              initialFocus
                             />
-                            </PopoverContent>
+                          </PopoverContent>
                         </Popover>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="department"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Department
+                          Department
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="Department" {...field} />
+                          <Input placeholder="Department" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="notableAchievement"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Notable Achievement
+                          Notable Achievement
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="Permanent" {...field} />
+                          <Input placeholder="Permanent" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                    <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="jobFunction"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Function
+                          Function
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="Function" {...field} />
+                          <Input placeholder="Function" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                    <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="personalitySummary"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Personality Summary
+                          Personality Summary
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="Good" {...field} />
+                          <Input placeholder="Good" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
+                  />
                 </div>
                 <div className="mt-5 grid grid-cols-2 items-center justify-center">
-                    <div className="text-left left">
-                     <button type="button" className='mr-auto md:mr-0' onClick={handlePrevStep}>Previous</button>
-                    </div>
-                    <div className="text-right right">
-                      <button type="button" className='bg-[#38313A] px-7 py-5 rounded-md text-white' onClick={handleNextStep}>Continue</button>
-                    </div>
+                  <div className="text-left left">
+                    <button
+                      type="button"
+                      className="mr-auto md:mr-0"
+                      onClick={handlePrevStep}
+                    >
+                      Previous
+                    </button>
+                  </div>
+                  <div className="text-right right">
+                    <button
+                      type="button"
+                      className="bg-[#38313A] px-7 py-5 rounded-md text-white"
+                      onClick={handleNextStep}
+                    >
+                      Continue
+                    </button>
+                  </div>
                 </div>
-                </div>
-                <p className='p-2'>{`Step ${step}`}</p>               
+              </div>
+              <p className="p-2">{`Step ${step}`}</p>
             </div>
-            )}
-            {step === 3 && (
-              <div>
-                <p className='text-xl px-8'>Organization Details</p>
-                <div className='mt-4 w-full px-8'>
-                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4 justify-center'>
+          )}
+          {step === 3 && (
+            <div>
+              <p className="text-xl px-8">Organization Details</p>
+              <div className="mt-4 w-full px-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center">
                   <FormField
                     control={form.control}
                     name="orgName"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Name
+                          Name
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="Organization Name" {...field} />
+                          <Input placeholder="Organization Name" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="orgAddress"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Address
+                          Address
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="Address" {...field} />
+                          <Input placeholder="Address" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="orgPostalCode"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Postal Code
+                          Postal Code
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="123456" {...field} />
+                          <Input placeholder="123456" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                    <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="orgCountry"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Country
+                          Country
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="Nigeria" {...field} />
+                          <Input placeholder="Nigeria" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                    <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="orgEmail"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Email Address
+                          Email Address
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="example@email.com" {...field} />
+                          <Input placeholder="example@email.com" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="orgPhone"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Phone Number
+                          Phone Number
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="+23481900000" {...field} />
+                          <Input placeholder="+23481900000" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
+                  />
                 </div>
                 <div className="mt-5 grid grid-cols-2 items-center justify-center">
-                    <div className="text-left left">
-                     <button type="button" className='mr-auto md:mr-0' onClick={handlePrevStep}>Previous</button>
-                    </div>
-                    <div className="text-right right">
-                      <button type="button" className='bg-[#38313A] px-7 py-5 rounded-md text-white' onClick={handleNextStep}>Continue</button>
-                    </div>
+                  <div className="text-left left">
+                    <button
+                      type="button"
+                      className="mr-auto md:mr-0"
+                      onClick={handlePrevStep}
+                    >
+                      Previous
+                    </button>
+                  </div>
+                  <div className="text-right right">
+                    <button
+                      type="button"
+                      className="bg-[#38313A] px-7 py-5 rounded-md text-white"
+                      onClick={handleNextStep}
+                    >
+                      Continue
+                    </button>
+                  </div>
                 </div>
-                </div>
-                <p className='p-2'>{`Step ${step}`}</p>               
+              </div>
+              <p className="p-2">{`Step ${step}`}</p>
             </div>
-            )}
-            {step === 4 && (
-              <div>
-                <p className='text-xl px-8'>Contact Person Details</p>
-                <div className='mt-4 w-full px-8'>
-                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4 justify-center'>
+          )}
+          {step === 4 && (
+            <div>
+              <p className="text-xl px-8">Contact Person Details</p>
+              <div className="mt-4 w-full px-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center">
                   <FormField
                     control={form.control}
                     name="contactName"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Name
+                          Name
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="Name" {...field} />
+                          <Input placeholder="Name" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="contactAddress"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Address
+                          Address
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="Address" {...field} />
+                          <Input placeholder="Address" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="contactPostalCode"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Postal Code
+                          Postal Code
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="123456" {...field} />
+                          <Input placeholder="123456" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                    <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="contactCountry"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Country
+                          Country
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="Nigeria" {...field} />
+                          <Input placeholder="Nigeria" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                    <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="contactEmail"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Email Address
+                          Email Address
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="example@email.com" {...field} />
+                          <Input placeholder="example@email.com" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="contactPhone"
                     render={({ field }) => (
-                        <FormItem className="w-full">
+                      <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                            Phone Number
+                          Phone Number
                         </FormLabel>
                         <FormControl>
-                            <Input placeholder="+23481900000" {...field} />
+                          <Input placeholder="+23481900000" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
+                  />
                 </div>
                 <div className="mt-5 grid grid-cols-2 items-center justify-center">
-                    <div className="text-left left">
-                     <button type="button" className='mr-auto md:mr-0' onClick={handlePrevStep}>Previous</button>
-                    </div>
-                    <div className="text-right right">
-                      <button type="submit" className='bg-[#38313A] px-7 py-5 rounded-md text-white'>Submit</button>
-                    </div>
+                  <div className="text-left left">
+                    <button
+                      type="button"
+                      className="mr-auto md:mr-0"
+                      onClick={handlePrevStep}
+                    >
+                      Previous
+                    </button>
+                  </div>
+                  <div className="text-right right">
+                    <button
+                      type="submit"
+                      className="bg-[#38313A] px-7 py-5 rounded-md text-white"
+                    >
+                      Submit
+                    </button>
+                  </div>
                 </div>
-                </div>
-                <p className='p-2'>{`Step ${step}`}</p>               
+              </div>
+              <p className="p-2">{`Step ${step}`}</p>
             </div>
-            )}
+          )}
 
-
-            {step === 5 && (
-                <div>
-                {/* Render success or error component based on request result */}
-                {requestResult === true && <SuccessMessage />}
-                {requestResult === false && <ErrorMessage />}
-                </div>
-            )} 
-            </form>
-        </Form>
-        )}
+          {step === 5 && (
+            <div>
+              {/* Render success or error component based on request result */}
+              {requestResult === true && <SuccessMessage />}
+              {requestResult === false && <ErrorMessage />}
+            </div>
+          )}
+        </form>
+      </Form>
     </main>
   );
 };

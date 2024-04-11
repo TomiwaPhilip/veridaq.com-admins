@@ -545,7 +545,6 @@ export async function getWorkReferenceById(docId: string) {
     // Convert the MongoDB _id field and other IDs to string
     const stringifiedWorkReference = {
       ...workReference.toJSON(),
-      _id: workReference._id.toString(), // Convert _id to string
     };
 
     // console.log(stringifiedWorkReference);
@@ -603,7 +602,6 @@ export async function getDocVerificationById(docId: string) {
     // Convert the MongoDB _id field and other IDs to string
     const stringifiedDocVerification = {
       ...docVerification.toJSON(),
-      _id: docVerification._id.toString(), // Convert _id to string
     };
 
     // console.log(stringifiedWorkReference);
@@ -661,7 +659,6 @@ export async function getMemberReferenceById(docId: string) {
     // Convert the MongoDB _id field and other IDs to string
     const stringifiedMemberReference = {
       ...memberReference.toJSON(),
-      _id: memberReference._id.toString(), // Convert _id to string
     };
 
     // console.log(stringifiedWorkReference);
@@ -721,7 +718,6 @@ export async function getStudentshipStatusById(docId: string) {
     // Convert the MongoDB _id field and other IDs to string
     const stringifiedStudentshipStatus = {
       ...studentshipStatus.toJSON(),
-      _id: studentshipStatus._id.toString(), // Convert _id to string
     };
 
     // console.log(stringifiedWorkReference);
