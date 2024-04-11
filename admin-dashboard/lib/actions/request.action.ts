@@ -489,6 +489,9 @@ export async function createOrUpdateDocumentVerificationRequest(
 
 // Helper function to format the date as "DD-MM-YYYY"
 function formatDate(date: Date): string {
+  console.log(date);
+  if (!date) return ""; // Check if the date is undefined or null
+
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const year = date.getFullYear().toString();
@@ -511,6 +514,8 @@ export async function getWorkReference() {
       issued: false,
     }).select("firstName lastName dateRequested");
 
+    console.log(workReferences);
+
     // Format the data before returning to the frontend
     const formattedData = workReferences.map((doc) => ({
       DocDetails: `Work Reference Veridaq Request from ${doc.firstName} ${doc.lastName}`,
@@ -519,7 +524,6 @@ export async function getWorkReference() {
     }));
 
     if (formattedData) return formattedData;
-    false;
   } catch (error: any) {
     console.error(error);
     throw new Error("Failed to fetch WorkReference documents");

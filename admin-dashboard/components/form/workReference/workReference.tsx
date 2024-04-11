@@ -50,7 +50,7 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
   const handlePrevStep = () => {
     setStep(step - 1);
   };
-
+  console.log(docId)
   const form = useForm<z.infer<typeof WorkReferenceValidation2>>({
     resolver: zodResolver(WorkReferenceValidation2),
   });

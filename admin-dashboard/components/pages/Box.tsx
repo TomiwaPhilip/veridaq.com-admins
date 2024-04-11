@@ -141,7 +141,6 @@ export default function Box() {
                 ) : (
                   <div className="flex items-center justify-center h-full">
                     <RiLoader4Line className="animate-spin text-2xl mb-4" />
-                    <p>Loading...</p>
                   </div>
                 )}
               </div>
