@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, ChangeEvent, useRef } from "react";
+import React, { useState, ChangeEvent, useRef, useEffect } from "react";
 import {
   Form,
   FormControl,
@@ -23,7 +23,7 @@ import { z } from "zod";
 import Image from "next/image";
 import { upload } from "@vercel/blob/client";
 
-import { createOrUpdateDocumentVerificationRequest } from "@/lib/actions/request.action";
+import { createOrUpdateDocumentVerificationRequest, getDocVerificationById } from "@/lib/actions/request.action";
 import { DocumentVerificationValidation2 } from "@/lib/validations/documentverification";
 import { SuccessMessage, ErrorMessage } from "@/components/shared/shared";
 
@@ -51,6 +51,68 @@ const DocumentVerification: React.FC<documentVerificationProps> = ({
   });
 
   console.log(form.formState.errors);
+
+  useEffect(() => {
+    const fetchDocVerificationDoc = async () => {
+      if (!docId) return;
+      try {
+        const doc = await getDocVerificationById(docId);
+        console.log("Fetched document:", doc); // Log fetched document
+        // Set default values for form fields if available
+        if (doc) {
+          const {
+            firstName,
+            lastName,
+            middleName,
+            documentType,
+            documentName, 
+            id,
+            info,
+            image,
+            orgName,
+            orgAddress,
+            orgPostalCode,
+            orgCountry,
+            orgEmail,
+            orgPhone,
+            contactName,
+            contactAddress,
+            contactPostalCode,
+            contactCountry,
+            contactEmail,
+            contactPhone,
+          } = doc;
+          form.reset({
+            firstName,
+            lastName,
+            middleName,
+            id,
+            documentType,
+            documentName,
+            info,
+            image,
+            orgName,
+            orgAddress,
+            orgPostalCode,
+            orgCountry,
+            orgEmail,
+            orgPhone,
+            contactName,
+            contactAddress,
+            contactPostalCode,
+            contactCountry,
+            contactEmail,
+            contactPhone,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching organizations:", error);
+        // Handle error state if needed
+      }
+    };
+
+    fetchDocVerificationDoc();
+  }, [docId]);
 
   const handleImage = async (
     e: ChangeEvent<HTMLInputElement>,
@@ -91,7 +153,29 @@ const DocumentVerification: React.FC<documentVerificationProps> = ({
     console.log("I want to submit");
 
     try {
-      const create = await createOrUpdateDocumentVerificationRequest(data);
+      const create = await createOrUpdateDocumentVerificationRequest({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        middleName: data.middleName,
+        id: data.id,
+        documentType: data.documentType,
+        documentName: data.documentName,
+        info: data.info,
+        image: data.image,
+        orgName: data.orgName,
+        orgAddress: data.orgAddress,
+        orgPostalCode: data.orgPostalCode,
+        orgCountry: data.orgCountry,
+        orgEmail: data.orgEmail,
+        orgPhone: data.orgPhone,
+        contactName: data.contactName,
+        contactAddress: data.contactAddress,
+        contactPostalCode: data.contactPostalCode,
+        contactCountry: data.contactCountry,
+        contactEmail: data.contactEmail,
+        contactPhone: data.contactPhone,
+        _id: docId as string,
+      });
       setRequestResult(create);
       if (create) {
         handleNextStep();

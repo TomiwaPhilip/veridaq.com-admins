@@ -36,6 +36,8 @@ interface Params {
   contactPhone: string;
 }
 
+// TODO createDocument functions not updating
+
 export async function createOrUpdateWorkReferenceRequest({
   id,
   firstName,
@@ -72,7 +74,7 @@ export async function createOrUpdateWorkReferenceRequest({
 
     // If id is provided, find and update the document
     if (id) {
-      await WorkReferenceAdmin.findByIdAndUpdate(
+      const workref = await WorkReferenceAdmin.findByIdAndUpdate(
         id,
         {
           firstName,
@@ -105,6 +107,7 @@ export async function createOrUpdateWorkReferenceRequest({
         },
         { new: true },
       );
+      console.log(workref)
       return true; // Return true if update is successful
     } else {
       // If id is not provided, create a new document
@@ -385,6 +388,8 @@ interface DocumentParams {
   lastName: string;
   middleName?: string;
   id: string;
+  documentType: string,
+  documentName: string,
   info: string;
   image?: string;
   _id?: string;
@@ -420,8 +425,8 @@ export async function createOrUpdateDocumentVerificationRequest(
           firstName: params.firstName,
           lastName: params.lastName,
           middleName: params.middleName,
-          documentType: params.id, // Assuming id in MembershipParams corresponds to documentType
-          documentName: params.info, // Assuming info in MembershipParams corresponds to documentName
+          documentType: params.documentType, // Assuming id in MembershipParams corresponds to documentType
+          documentName: params.documentName, // Assuming info in MembershipParams corresponds to documentName
           id: params.id,
           info: params.info,
           image: params.image, // Default to empty string if image is not provided
@@ -488,6 +493,8 @@ export async function createOrUpdateDocumentVerificationRequest(
   }
 }
 
+// TODO format date not working
+
 // Helper function to format the date as "DD-MM-YYYY"
 function formatDate(date: Date): string {
   console.log(date);
@@ -513,9 +520,11 @@ export async function getWorkReference() {
     // Query the WorkReference collection based on orgId
     const workReferences = await WorkReferenceAdmin.find({
       issued: false,
-    }).select("firstName lastName dateRequested");
+    }).select("firstName lastName dateRequested issued");
 
-    console.log(workReferences);
+    console.log(workReferences)
+
+    // console.log(workReferences);
 
     // Format the data before returning to the frontend
     const formattedData = workReferences.map((doc) => ({
@@ -543,9 +552,11 @@ export async function getWorkReferenceById(docId: string) {
       throw new Error("Document not found");
     }
 
-    // Convert the MongoDB _id field and other IDs to string
     const stringifiedWorkReference = {
-      ...workReference.toJSON(),
+      ...workReference.toObject(),
+      _id: workReference._id.toString(), // Convert _id to string
+      user: workReference.user.toString()
+      // Convert other ObjectId fields to strings if necessary
     };
 
     // console.log(stringifiedWorkReference);
@@ -600,12 +611,14 @@ export async function getDocVerificationById(docId: string) {
       throw new Error("Document not found");
     }
 
-    // Convert the MongoDB _id field and other IDs to string
     const stringifiedDocVerification = {
-      ...docVerification.toJSON(),
+      ...docVerification.toObject(),
+      _id: docVerification._id.toString(), // Convert _id to string
+      user: docVerification.user.toString()
+      // Convert other ObjectId fields to strings if necessary
     };
 
-    // console.log(stringifiedWorkReference);
+    // console.log(stringifiedDocVerification);
 
     return stringifiedDocVerification;
   } catch (error: any) {
@@ -659,7 +672,9 @@ export async function getMemberReferenceById(docId: string) {
 
     // Convert the MongoDB _id field and other IDs to string
     const stringifiedMemberReference = {
-      ...memberReference.toJSON(),
+      ...memberReference.toObject(),
+      _id: memberReference._id.toString(), // Convert _id to string
+      user: memberReference.user.toString()
     };
 
     // console.log(stringifiedWorkReference);
@@ -718,7 +733,9 @@ export async function getStudentshipStatusById(docId: string) {
 
     // Convert the MongoDB _id field and other IDs to string
     const stringifiedStudentshipStatus = {
-      ...studentshipStatus.toJSON(),
+      ...studentshipStatus.toObject(),
+      _id: studentshipStatus._id.toString(), // Convert _id to string
+      user: studentshipStatus.user.toString()
     };
 
     // console.log(stringifiedWorkReference);

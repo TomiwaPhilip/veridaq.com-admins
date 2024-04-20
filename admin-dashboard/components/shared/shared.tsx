@@ -172,15 +172,28 @@ export function Header() {
         width={35}
         height={35}
       />
-      <Image
-        alt="user"
-        src={session?.image as string}
-        className="rounded-full aspect-square object-cover normal-border"
-        width={50}
-        height={50}
-        onClick={handleSignOut}
-        style={{ cursor: "pointer" }}
-      />
+      {session?.image ? (
+        <Image
+          alt="user"
+          src={session.image as string}
+          className="rounded-full aspect-square object-cover normal-border"
+          width={50}
+          height={50}
+          onClick={handleSignOut}
+          style={{ cursor: "pointer" }}
+        />
+      ) : (
+        <Image
+          alt="fallback"
+          src="/assets/images/user.png"
+          className="rounded-full aspect-square object-cover normal-border"
+          width={50}
+          height={50}
+          onClick={handleSignOut}
+          style={{ cursor: "pointer" }}
+        />
+      )}
+
     </header>
   );
 }

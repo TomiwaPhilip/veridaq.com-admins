@@ -130,7 +130,10 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
     };
 
     fetchWorkReferenceDoc();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [docId]);
+
 
   const onSubmit = async (data: z.infer<typeof WorkReferenceValidation2>) => {
     console.log("I want to submit");
@@ -161,7 +164,7 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
         contactCountry: data.contactCountry,
         contactEmail: data.contactEmail,
         contactPhone: data.contactPhone,
-        _id: docId as string,
+        id: docId as string,
       });
       setRequestResult(create);
       if (create) {
