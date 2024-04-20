@@ -60,6 +60,8 @@ export default function Box() {
     setOpenModalId(null);
   };
 
+  // TODO: Implement endless scrolling and fallback for not-found
+
   return (
     <main className="mt-[30px]">
       <div className="mb-[40px]">

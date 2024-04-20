@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, ChangeEvent, useRef } from "react";
+import React, { useState, ChangeEvent, useRef, useEffect } from "react";
 import {
   Form,
   FormControl,
@@ -16,7 +16,7 @@ import { z } from "zod";
 import Image from "next/image";
 import { upload } from "@vercel/blob/client";
 
-import { createOrUpdateMembershipReference } from "@/lib/actions/request.action";
+import { createOrUpdateMembershipReference, getMemberReferenceById } from "@/lib/actions/request.action";
 import { MembershipReferenceValidation2 } from "@/lib/validations/membershipreference";
 import { SuccessMessage, ErrorMessage } from "@/components/shared/shared";
 
@@ -42,6 +42,64 @@ const MembershipReference: React.FC<memberReferenceProps> = ({ docId }) => {
   });
 
   console.log(form.formState.errors);
+
+  useEffect(() => {
+    const fetchMemberReferenceDoc = async () => {
+      if (!docId) return;
+      try {
+        const doc = await getMemberReferenceById(docId);
+        console.log("Fetched document:", doc); // Log fetched document
+        // Set default values for form fields if available
+        if (doc) {
+          const {
+            firstName,
+            lastName,
+            middleName,
+            id,
+            info,
+            image,
+            orgName,
+            orgAddress,
+            orgPostalCode,
+            orgCountry,
+            orgEmail,
+            orgPhone,
+            contactName,
+            contactAddress,
+            contactPostalCode,
+            contactCountry,
+            contactEmail,
+            contactPhone,
+          } = doc;
+          form.reset({
+            firstName,
+            lastName,
+            middleName,
+            id,
+            info,
+            image,
+            orgName,
+            orgAddress,
+            orgPostalCode,
+            orgCountry,
+            orgEmail,
+            orgPhone,
+            contactName,
+            contactAddress,
+            contactPostalCode,
+            contactCountry,
+            contactEmail,
+            contactPhone,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching organizations:", error);
+        // Handle error state if needed
+      }
+    };
+
+    fetchMemberReferenceDoc();
+  }, [docId]);
 
   const handleImage = async (
     e: ChangeEvent<HTMLInputElement>,
@@ -82,7 +140,27 @@ const MembershipReference: React.FC<memberReferenceProps> = ({ docId }) => {
     console.log("I want to submit");
 
     try {
-      const create = await createOrUpdateMembershipReference(data);
+      const create = await createOrUpdateMembershipReference({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        middleName: data.middleName,
+        id: data.id,
+        info: data.info,
+        image: data.image,
+        orgName: data.orgName,
+        orgAddress: data.orgAddress,
+        orgPostalCode: data.orgPostalCode,
+        orgCountry: data.orgCountry,
+        orgEmail: data.orgEmail,
+        orgPhone: data.orgPhone,
+        contactName: data.contactName,
+        contactAddress: data.contactAddress,
+        contactPostalCode: data.contactPostalCode,
+        contactCountry: data.contactCountry,
+        contactEmail: data.contactEmail,
+        contactPhone: data.contactPhone,
+        _id: docId as string,
+      });
       setRequestResult(create);
       if (create) {
         handleNextStep();
