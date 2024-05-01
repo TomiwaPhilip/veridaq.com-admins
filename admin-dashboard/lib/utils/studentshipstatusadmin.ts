@@ -1,4 +1,4 @@
-import { Schema, model, models } from 'mongoose';
+import { Schema, model, models } from "mongoose";
 
 const StudentshipStatusAdminSchema = new Schema({
   firstName: { type: String, required: true, minlength: 1 },
@@ -26,13 +26,35 @@ const StudentshipStatusAdminSchema = new Schema({
   contactPhone: { type: String, required: true, minlength: 1 },
   user: {
     type: Schema.Types.ObjectId,
-    ref: 'User', // Reference to the User collection
+    ref: "User", // Reference to the User collection
     required: true, // Assuming a StudentshipStatusAdmin must be associated with a User
+  },
+  issued: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
+  dateIssued: {
+    type: Date,
+    default: Date.now,
+  },
+  dateRequested: {
+    type: Date,
+    default: Date.now,
+  },
+  badgeUrl: {
+    type: String,
+    default: null,
+  },
+  issuingAdminDetails: {
+    type: Schema.Types.ObjectId,
+    ref: "Admin",
   },
 });
 
 // Create and export the Mongoose model based on the schema
-const StudentshipStatusAdmin = models.StudentshipStatusAdmin || model("StudentshipStatusAdmin", StudentshipStatusAdminSchema);
-
+const StudentshipStatusAdmin =
+  models.StudentshipStatusAdmin ||
+  model("StudentshipStatusAdmin", StudentshipStatusAdminSchema);
 
 export default StudentshipStatusAdmin;
