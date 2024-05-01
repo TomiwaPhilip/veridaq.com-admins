@@ -304,7 +304,7 @@ const StudentshipStatus: React.FC<studentStatusProps> = ({ docId }) => {
                       </FormItem>
                     )}
                   />
-                                    <FormField
+                <FormField
                     control={form.control}
                     name="categoryOfStudy"
                     render={({ field }) => (
