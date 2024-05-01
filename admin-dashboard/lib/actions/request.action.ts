@@ -6,6 +6,8 @@ import WorkReferenceAdmin from "../utils/workreferenceadmin";
 import StudentshipStatusAdmin from "../utils/studentshipstatusadmin";
 import DocumentVerificationAdmin from "../utils/documentVerificationAdmin";
 import MembershipReferenceAdmin from "../utils/membershipReferenceAdmin";
+import User from "../utils/user";
+import Organization from "../utils/organizationSchema";
 import {
   generateVeridaqID,
   concatenateDates,
@@ -1059,5 +1061,58 @@ export async function getIssuedDocVerification() {
   } catch (error: any) {
     console.error(error);
     throw new Error("Failed to fetch issued studentshipStatus documents");
+  }
+}
+
+export async function getUserDoc() {
+  try {
+    connectToDB();
+
+    const session = await getSession();
+
+    if (!session) {
+      throw new Error("Unauthorized");
+    }
+
+    // Get users with firstname, lastname, and MongoDB ID
+    const users = await User.find().select("firstname lastname _id");
+
+    console.log("users", users)
+
+    // Get organizations with orgName and MongoDB ID
+    const organizations = await Organization.find().select("name _id");
+
+    console.log("organizations", organizations)
+
+    // Map over users and create an array of user objects
+    const mappedUsers = users.map((user) => ({
+      userName: `${user.firstname} ${user.lastname}`,
+      userType: "Individual",
+      userId: user._id.toString(),
+    }));
+
+    console.log("mappedUsers", mappedUsers)
+
+    // Map over organizations and create an array of organization objects
+    const mappedOrganizations = organizations.map((org) => ({
+      userName: org.name,
+      userType: "Organization",
+      userId: org._id.toString(),
+    }));
+
+    console.log("mappedOrganizations", mappedOrganizations)
+
+    // Join both arrays together
+    const allUsers = [...mappedUsers, ...mappedOrganizations];
+
+    console.log("All users", allUsers)
+
+    return allUsers;
+  } catch (error: any) {
+    console.error("Error querying DB for users", error);
+    throw new Error(
+      "An error occurred while trying to query DB for users",
+      error
+    );
   }
 }

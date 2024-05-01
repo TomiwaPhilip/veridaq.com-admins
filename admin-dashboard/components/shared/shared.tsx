@@ -76,22 +76,6 @@ export function Nav() {
             </Link>
           </li>
           <li
-            className={`gradient-border rounded-md ${pathname === "/veridaq-revenue" ? "normal-gradient-border" : ""}`}
-          >
-            <Link
-              href="/veridaq-revenue"
-              className="flex bg-[#38313A] items-center gap-4 text-white font-medium p-4"
-            >
-              <Image
-                alt="inbox"
-                src="/assets/icons/money.svg"
-                width={20}
-                height={20}
-              />
-              Veridaq Revenue
-            </Link>
-          </li>
-          <li
             className={`gradient-border rounded-md ${pathname === "/veridaq-store" ? "normal-gradient-border" : ""}`}
           >
             <Link
@@ -144,11 +128,6 @@ export function Header() {
       {pathname === "/" && (
         <p className="text-[32px] font-semibold text-gradient mr-auto">
           {`Welcome to Veridaq, ${name}`}
-        </p>
-      )}
-      {pathname === "/veridaq-revenue" && (
-        <p className="text-[32px] font-semibold text-gradient mr-auto">
-          Check Revenues on Veridaq, here.
         </p>
       )}
       {pathname === "/veridaq-box" && (

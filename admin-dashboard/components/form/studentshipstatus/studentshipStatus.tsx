@@ -65,7 +65,6 @@ const StudentshipStatus: React.FC<studentStatusProps> = ({ docId }) => {
       if (!docId) return;
       try {
         const doc = await getStudentshipStatusById(docId);
-        console.log("Fetched document:", doc); // Log fetched document
         // Set default values for form fields if available
         if (doc) {
           const {
