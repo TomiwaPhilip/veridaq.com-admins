@@ -6,6 +6,12 @@ import WorkReferenceAdmin from "../utils/workreferenceadmin";
 import StudentshipStatusAdmin from "../utils/studentshipstatusadmin";
 import DocumentVerificationAdmin from "../utils/documentVerificationAdmin";
 import MembershipReferenceAdmin from "../utils/membershipReferenceAdmin";
+import {
+  generateVeridaqID,
+  concatenateDates,
+  getCurrentDateTime,
+} from "../utils";
+import { getDocAndUpload } from "./server-hooks/requestWithUpload.action";
 
 interface Params {
   firstName: string;
@@ -72,7 +78,39 @@ export async function createOrUpdateWorkReferenceRequest({
 
     console.log(id);
 
-    // If id is provided, find and update the document
+    const session = await getSession()
+
+
+    const period = concatenateDates(workStartDate, workEndDate);
+    const currentDateTime = getCurrentDateTime();
+    const badgeID = generateVeridaqID();
+
+    const data = {
+      nameOfEmployee: firstName + " " + lastName,
+      employeeID: staffId,
+      employeeStatus: subType,
+      nameOfInstitution: orgName,
+      subType: employeeType,
+      designation: designation,
+      department: department,
+      period: period,
+      jobFunctions: jobFunction,
+      notableAchievement: notableAchievement,
+      personalitySummary: personalitySummary,
+      nameOfAdmin: contactName,
+      adminDesignation: "Admin",
+      currentDateTime: currentDateTime,
+      badgeID: badgeID,
+    };
+    const url =
+      "https://silver-adventure-wr7r4g7g77jwcg7jp-5000.app.github.dev/work-reference";
+    const docName = "workReference.pdf";
+
+    const result = await getDocAndUpload(data, url, docName);
+
+    if (result) {
+
+          // If id is provided, find and update the document
     if (id) {
       const workref = await WorkReferenceAdmin.findByIdAndUpdate(
         id,
@@ -104,6 +142,8 @@ export async function createOrUpdateWorkReferenceRequest({
           contactPhone,
           issued: true,
           dateIssued: new Date(),
+          badgeUrl: result,
+          issuingAdminDetails: session.userId,
         },
         { new: true },
       );
@@ -146,12 +186,17 @@ export async function createOrUpdateWorkReferenceRequest({
         contactPhone,
         issued: true,
         dateIssued: new Date(),
+        badgeUrl: result,
+        issuingAdminDetails: session.userId,
       });
 
       // Save the WorkReference document to the database
       await workReference.save();
       return true; // Return true if creation is successful
     }
+
+    } else return false
+
   } catch (error: any) {
     throw new Error(
       `Failed to save/update WorkReference request: ${error.message}`,
@@ -197,7 +242,37 @@ export async function createOrUpdateStudentshipStatus(
 
     console.log(params._id);
 
-    // If id is provided, find and update the document
+    const session = await getSession();
+
+    const period = concatenateDates(params.entryYear, params.exitYear);
+    const currentDateTime = getCurrentDateTime();
+    const badgeID = generateVeridaqID();
+
+    console.log(params.id);
+
+    const data = {
+      nameOfStudent: params.firstName + " " + params.lastName,
+      studentID: params.studentId,
+      nameOfInstitution: params.orgName,
+      passportUrl: params.image,
+      categoryOfStudy: params.categoryOfStudy,
+      currentLevel: params.currentLevel,
+      courseOfStudy: params.courseOfStudy,
+      faculty: params.faculty,
+      yearOfEntryAndExit: period,
+      nameOfAdmin: params.contactName,
+      adminDesignation: "Admin",
+      currentDateTime: currentDateTime,
+      badgeID: badgeID,
+    };
+    const url =
+      "https://silver-adventure-wr7r4g7g77jwcg7jp-5000.app.github.dev/student-status";
+    const docName = "studentStatus.pdf";
+
+    const result = await getDocAndUpload(data, url, docName);
+
+    if(result) {
+          // If id is provided, find and update the document
     if (params._id) {
       await StudentshipStatusAdmin.findByIdAndUpdate(
         params._id,
@@ -227,6 +302,8 @@ export async function createOrUpdateStudentshipStatus(
           contactPhone: params.contactPhone,
           issued: true,
           dateIssued: new Date(),
+          badgeUrl: result,
+          issuingAdminDetails: session.userId,
         },
         { new: true },
       );
@@ -266,12 +343,15 @@ export async function createOrUpdateStudentshipStatus(
         contactPhone: params.contactPhone,
         issued: true,
         dateIssued: new Date(),
+        badgeUrl: result,
+        issuingAdminDetails: session.userId,
       });
 
       // Save the WorkReference document to the database
       await studentshipStatus.save();
       return true; // Return true if creation is successful
     }
+    } else return false
   } catch (error: any) {
     throw new Error(
       `Failed to save/update StudentshipStatus request: ${error.message}`,
@@ -311,7 +391,60 @@ export async function createOrUpdateMembershipReference(
 
     console.log(params._id);
 
-    // If id is provided, find and update the document
+    const session = await getSession();
+
+    if (!session) {
+      throw new Error("Unauthorized");
+    }
+
+    const period = concatenateDates(params.memberSince);
+    const currentDateTime = getCurrentDateTime();
+    const badgeID = generateVeridaqID();
+
+    console.log(params.id);
+
+    let result;
+
+    if (!params.alumniCategory) {
+      const data = {
+        memberName: params.firstName + " " + params.lastName,
+        memberID: params.id,
+        nameOfInstitution: params.orgName,
+        passportUrl: params.image,
+        memberSince: period,
+        nameOfOrganization: params.orgName,
+        nameOfAdmin: params.contactName,
+        adminDesignation: "Admin",
+        currentDateTime: currentDateTime,
+        badgeID: badgeID,
+      };
+      const url =
+        "https://silver-adventure-wr7r4g7g77jwcg7jp-5000.app.github.dev/member-reference";
+      const docName = "memberReference.pdf";
+
+      result = await getDocAndUpload(data, url, docName);
+    } else {
+      const data = {
+        alumniName: params.firstName + " " + params.lastName,
+        alumniID: params.id,
+        nameOfInstitution: params.orgName,
+        alumniSince: period,
+        alumniCategory: params.alumniCategory,
+        nameOfOrganization: params.orgName,
+        nameOfAdmin: params.contactName,
+        adminDesignation: "Admin",
+        currentDateTime: currentDateTime,
+        badgeID: badgeID,
+      };
+      const url =
+        "https://silver-adventure-wr7r4g7g77jwcg7jp-5000.app.github.dev/alumni-reference";
+      const docName = "alumniReference.pdf";
+
+      result = await getDocAndUpload(data, url, docName);
+    }
+
+    if (result) {
+          // If id is provided, find and update the document
     if (params._id) {
       await MembershipReferenceAdmin.findByIdAndUpdate(
         params._id,
@@ -336,6 +469,8 @@ export async function createOrUpdateMembershipReference(
           contactPhone: params.contactPhone,
           issued: true,
           dateIssued: new Date(),
+          badgeUrl: result,
+          issuingAdminDetails: session.userId,
         },
         { new: true },
       );
@@ -370,12 +505,16 @@ export async function createOrUpdateMembershipReference(
         contactPhone: params.contactPhone,
         issued: true,
         dateIssued: new Date(),
+        badgeUrl: result,
+        issuingAdminDetails: session.userId,
       });
 
       // Save the WorkReference document to the database
       await membershipReference.save();
       return true; // Return true if creation is successful
     }
+    } else return false
+
   } catch (error: any) {
     throw new Error(
       `Failed to save/update membershipReference request: ${error.message}`,
@@ -417,6 +556,38 @@ export async function createOrUpdateDocumentVerificationRequest(
 
     console.log(params._id);
 
+    const session = await getSession();
+
+    if (!session) {
+      throw new Error("Unauthorized");
+    }
+
+    const currentDateTime = getCurrentDateTime();
+    const badgeID = generateVeridaqID();
+    
+    console.log(params.id);
+
+    const data = {
+      nameOfOrganization: params.orgName,
+      nameOfIndividual: params.firstName + " " + params.lastName,
+      documentType: params.documentType,
+      documentName: params.documentName,
+      documentID: params.id,
+      moreInfo: params.info,
+      nameOfAdmin: params.contactName,
+      adminDesignation: "Admin",
+      currentDateTime: currentDateTime,
+      badgeID: badgeID,
+    };
+
+    const url =
+      "https://silver-adventure-wr7r4g7g77jwcg7jp-5000.app.github.dev/document-verification";
+    const docName = "memberReference.pdf";
+
+    const result = await getDocAndUpload(data, url, docName);
+
+    if(result) {
+      
     // If id is provided, find and update the document
     if (params._id) {
       await DocumentVerificationAdmin.findByIdAndUpdate(
@@ -444,6 +615,8 @@ export async function createOrUpdateDocumentVerificationRequest(
           contactPhone: params.contactPhone,
           issued: true,
           dateIssued: new Date(),
+          badgeUrl: result,
+          issuingAdminDetails: session.userId,
         },
         { new: true },
       );
@@ -480,12 +653,16 @@ export async function createOrUpdateDocumentVerificationRequest(
         contactPhone: params.contactPhone,
         issued: true,
         dateIssued: new Date(),
+        badgeUrl: result,
+        issuingAdminDetails: session.userId,
       });
 
       // Save the WorkReference document to the database
       await documentVerification.save();
       return true; // Return true if creation is successful
     }
+    } else return false
+
   } catch (error: any) {
     throw new Error(
       `Failed to save/update DocumentVerification request: ${error.message}`,

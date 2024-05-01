@@ -48,10 +48,6 @@ export async function saveSession(session: SessionData): Promise<void> {
   existingSession.firstName = session.firstName;
   existingSession.lastName = session.lastName;
   existingSession.image = session.image;
-  existingSession.role = session.role;
-  existingSession.orgId = session.orgId;
-  existingSession.isOnboarded = session.isOnboarded;
-  existingSession.isVerified = session.isVerified;
   existingSession.isLoggedIn = session.isLoggedIn;
 
   // Save the session
@@ -86,4 +82,63 @@ export function verifyToken(providedToken: string, storedToken: string): boolean
 
   // Compare the hashed provided token with the stored token
   return hashedProvidedToken === storedToken;
+}
+
+export function generateVeridaqID(): string {
+  const randomNumber = Math.floor(Math.random() * 9000) + 1000; // Generate a random number between 1000 and 9999
+  return `Veridaq-${randomNumber}`;
+}
+
+export function concatenateDates(startDate: Date, endDate?: Date): string {
+  // Format start date
+  const formattedStartDate = startDate.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
+  if (endDate) {
+    // Format end date
+    const formattedEndDate = endDate.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+
+    // Concatenate formatted dates with "--" in between
+    return `${formattedStartDate} -- ${formattedEndDate}`;
+  } else {
+    // Construct "Till Date" string using the year from the start date
+
+    return `${formattedStartDate} -- Till Date`;
+  }
+}
+
+export function getCurrentDateTime(): string {
+  const currentDate = new Date();
+
+  // Convert UTC time to local time zone
+  const localDate = new Date(
+    currentDate.getTime() - currentDate.getTimezoneOffset() * 60000,
+  );
+
+  // Get day, month, and year
+  const day = localDate.getDate();
+  const month = localDate.getMonth() + 1; // Month is zero-based, so add 1
+  const year = localDate.getFullYear();
+
+  // Get hours, minutes, and AM/PM
+  let hours = localDate.getHours();
+  const minutes = localDate.getMinutes();
+  const amOrPm = hours >= 12 ? "PM" : "AM";
+
+  // Convert hours to 12-hour format
+  hours = hours % 12 || 12;
+
+  // Format day, month, year, hours, and minutes
+  const formattedDate = `${day < 10 ? "0" : ""}${day}-${month < 10 ? "0" : ""}${month}-${year}`;
+  const formattedTime = `${hours}:${minutes < 10 ? "0" : ""}${minutes}${amOrPm}`;
+
+  // Return formatted date and time
+  return `${formattedDate} ${formattedTime}`;
 }
