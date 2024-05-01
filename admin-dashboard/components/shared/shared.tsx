@@ -269,15 +269,45 @@ export function Card3({
   bgColor,
   outlineColor,
   textColor,
+  link,
 }: {
   heading: string;
   bgColor: string;
   outlineColor: string;
   textColor: string;
+  link: string;
 }) {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [copy, setCopy] = useState("Copy Link");
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleCopyLink = (link: string) => {
+    // Copy link to clipboard
+    if (navigator.clipboard) {
+      navigator.clipboard
+        .writeText(link)
+        .then(() => {
+          setCopy("Copied");
+          console.log("Link copied to clipboard!");
+          setTimeout(() => {
+            setCopy("Copy Link");
+          }, 4000);
+        })
+        .catch((error) => {
+          // Unable to write to clipboard
+          console.error("Failed to copy link to clipboard:", error);
+        });
+    } else {
+      setCopy("Unable to Copy");
+    }
+  };
+
   return (
     <div
-      className="card rounded-lg text-[#38313A] text-center"
+      className="card rounded-lg text-[#38313A] text-center relative"
       style={{
         backgroundColor: bgColor,
         borderColor: outlineColor,
@@ -293,12 +323,27 @@ export function Card3({
         className="py-2 flex justify-center text-center"
         style={{ backgroundColor: outlineColor }}
       >
-        <Image
-          src={"/assets/icons/icon-command.png"}
-          alt="options"
-          width={40}
-          height={40}
-        />
+        <button onClick={toggleDropdown} className="hover:cursor-pointer">
+          <Image
+            src={"/assets/icons/icon-command.png"}
+            alt="options"
+            width={40}
+            height={40}
+          />
+        </button>
+        {isDropdownOpen && (
+          <div className="absolute top-full right-0 mt-2 z-10 bg-white text-black rounded-lg shadow-md">
+            <button
+              onClick={() => handleCopyLink(link)}
+              className="block w-full py-2 px-4 text-left"
+            >
+              {copy}
+            </button>
+            <Link href={link}>
+              <button className="block w-full py-2 px-4 text-left">Open</button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
