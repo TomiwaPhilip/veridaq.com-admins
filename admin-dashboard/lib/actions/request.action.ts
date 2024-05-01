@@ -211,12 +211,13 @@ interface StudentshipParams {
   currentLevel: string;
   courseOfStudy: string;
   studentId: string;
-  info?: string; // Optional info field
+  categoryOfStudy: string;
   faculty: string;
   entryYear: Date;
   exitYear?: Date; // Optional exitYear field
   image: string;
   id?: string;
+  info?: string;
   orgName: string;
   orgAddress: string;
   orgPostalCode: string;
@@ -283,11 +284,11 @@ export async function createOrUpdateStudentshipStatus(
           currentLevel: params.currentLevel,
           courseOfStudy: params.courseOfStudy,
           studentId: params.studentId,
-          info: params.info,
           faculty: params.faculty,
           entryYear: params.entryYear,
           exitYear: params.exitYear,
           image: params.image,
+          info: params.info,
           orgName: params.orgName,
           orgAddress: params.orgAddress,
           orgPostalCode: params.orgPostalCode,
@@ -324,11 +325,11 @@ export async function createOrUpdateStudentshipStatus(
         currentLevel: params.currentLevel,
         courseOfStudy: params.courseOfStudy,
         studentId: params.studentId,
-        info: params.info,
         faculty: params.faculty,
         entryYear: params.entryYear,
         exitYear: params.exitYear,
         image: params.image,
+        info: params.info,
         orgName: params.orgName,
         orgAddress: params.orgAddress,
         orgPostalCode: params.orgPostalCode,
@@ -364,7 +365,8 @@ interface MembershipParams {
   lastName: string;
   middleName?: string;
   id: string;
-  info: string;
+  memberSince: Date;
+  alumniCategory?: string;
   image?: string;
   _id?: string;
   orgName: string;
@@ -453,7 +455,6 @@ export async function createOrUpdateMembershipReference(
           lastName: params.lastName,
           middleName: params.middleName,
           id: params.id,
-          info: params.info,
           image: params.image,
           orgName: params.orgName,
           orgAddress: params.orgAddress,
@@ -489,7 +490,6 @@ export async function createOrUpdateMembershipReference(
         lastName: params.lastName,
         middleName: params.middleName,
         id: params.id,
-        info: params.info,
         image: params.image,
         orgName: params.orgName,
         orgAddress: params.orgAddress,

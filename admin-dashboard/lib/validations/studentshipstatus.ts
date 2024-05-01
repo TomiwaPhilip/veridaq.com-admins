@@ -20,7 +20,9 @@ export const StudentshipStatusValidation = z.object({
   studentId: z.string().min(1, {
     message: "Staff ID must be at least 1 character.",
   }),
-  info: z.string().optional(),
+  categoryOfStudy: z.string().min(1, {
+    message: "Category of Study must be at least 1 character.",
+  }),
   faculty: z.string().min(1, {
     message: "Faculty must be at least 1 character.",
   }), 
@@ -44,6 +46,9 @@ export const StudentshipStatusValidation2 = z.object({
     }),
     courseOfStudy: z.string().min(1, {
       message: "Sub Type must be at least 1 character.",
+    }),
+    categoryOfStudy: z.string().min(1, {
+      message: "Category of Study must be at least 1 character.",
     }),
     studentId: z.string().min(1, {
       message: "Staff ID must be at least 1 character.",

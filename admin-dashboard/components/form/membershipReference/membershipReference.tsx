@@ -15,6 +15,16 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Image from "next/image";
 import { upload } from "@vercel/blob/client";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 
 import { createOrUpdateMembershipReference, getMemberReferenceById } from "@/lib/actions/request.action";
 import { MembershipReferenceValidation2 } from "@/lib/validations/membershipreference";
@@ -56,7 +66,6 @@ const MembershipReference: React.FC<memberReferenceProps> = ({ docId }) => {
             lastName,
             middleName,
             id,
-            info,
             image,
             orgName,
             orgAddress,
@@ -76,7 +85,6 @@ const MembershipReference: React.FC<memberReferenceProps> = ({ docId }) => {
             lastName,
             middleName,
             id,
-            info,
             image,
             orgName,
             orgAddress,
@@ -145,8 +153,9 @@ const MembershipReference: React.FC<memberReferenceProps> = ({ docId }) => {
         lastName: data.lastName,
         middleName: data.middleName,
         id: data.id,
-        info: data.info,
         image: data.image,
+        memberSince: data.memberSince,
+        alumniCategory: data.alumniCategory,
         orgName: data.orgName,
         orgAddress: data.orgAddress,
         orgPostalCode: data.orgPostalCode,
@@ -242,14 +251,57 @@ const MembershipReference: React.FC<memberReferenceProps> = ({ docId }) => {
                   />
                   <FormField
                     control={form.control}
-                    name="info"
+                    name="memberSince"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel className="font-medium text-[16px]">
+                          Member/Alumni Since
+                        </FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "flex h-12 w-full normal-border bg-[#C3B8D8] pt-10 rounded-lg px-1 py-3 placeholder:text-gray-500 text-left disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-950",
+                                  !field.value && "text-muted-foreground",
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) =>
+                                date > new Date() || date < new Date("1900")
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="alumniCategory"
                     render={({ field }) => (
                       <FormItem className="w-full">
                         <FormLabel className="font-medium text-[16px]">
-                          Additional Info
+                          Alumni Category
                         </FormLabel>
                         <FormControl>
-                          <Input placeholder="Info" {...field} />
+                          <Input placeholder="Post Graduate" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
