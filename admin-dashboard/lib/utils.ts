@@ -2,12 +2,12 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import getSession from "./actions/server-hooks/getsession.action";
 import { SessionData } from "./iron-session/session";
-import crypto from 'crypto';
-import { Resend } from 'resend';
+import crypto from "crypto";
+import { Resend } from "resend";
 // import { SendVerificationRequestParams } from "next-auth/providers/email";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function isBase64Image(imageData: string) {
@@ -16,27 +16,28 @@ export function isBase64Image(imageData: string) {
 }
 
 interface SendVerificationRequestParams {
-  url: string,
-  email: string,
+  url: string;
+  email: string;
 }
 export const sendVerificationRequest = async (
   params: SendVerificationRequestParams,
 ) => {
   try {
-    const resend = new Resend( process.env.RESEND_API_KEY! );
+    const resend = new Resend(process.env.RESEND_API_KEY!);
     await resend.emails.send({
-      from: 'onboarding@veridaq.com',
+      from: "onboarding@veridaq.com",
       to: params.email,
-      subject: 'Login Link to your Account',
-      html: '<p>Click the magic link below to sign in to your account:</p>\
-             <p><a href="' + params.url + '"><b>Sign in</b></a></p>',
+      subject: "Login Link to your Account",
+      html:
+        '<p>Click the magic link below to sign in to your account:</p>\
+             <p><a href="' +
+        params.url +
+        '"><b>Sign in</b></a></p>',
     });
   } catch (error) {
     console.log({ error });
   }
 };
-
-
 
 export async function saveSession(session: SessionData): Promise<void> {
   // Check if session exists
@@ -56,13 +57,17 @@ export async function saveSession(session: SessionData): Promise<void> {
 
 // Function to hash a token
 function hashToken(token: string): string {
-  return crypto.createHash('sha256').update(token).digest('hex');
+  return crypto.createHash("sha256").update(token).digest("hex");
 }
 
-export function generateToken(): { token: string; generatedAt: Date; expiresIn: Date } {
+export function generateToken(): {
+  token: string;
+  generatedAt: Date;
+  expiresIn: Date;
+} {
   // Generate a random token
-  const token = crypto.randomBytes(20).toString('hex');
-  
+  const token = crypto.randomBytes(20).toString("hex");
+
   // Current time
   const generatedAt = new Date();
 
@@ -76,7 +81,10 @@ export function generateToken(): { token: string; generatedAt: Date; expiresIn: 
 }
 
 // Function to verify a token
-export function verifyToken(providedToken: string, storedToken: string): boolean {
+export function verifyToken(
+  providedToken: string,
+  storedToken: string,
+): boolean {
   // Hash the provided token
   const hashedProvidedToken = hashToken(providedToken);
 
@@ -86,7 +94,7 @@ export function verifyToken(providedToken: string, storedToken: string): boolean
 
 export function generateVeridaqID(): string {
   const randomNumber = Math.floor(Math.random() * 9000) + 1000; // Generate a random number between 1000 and 9999
-  return `Veridaq-${randomNumber}`;
+  return `veridaq-${randomNumber}`;
 }
 
 export function concatenateDates(startDate: Date, endDate?: Date): string {

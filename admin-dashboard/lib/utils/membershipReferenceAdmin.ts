@@ -44,6 +44,10 @@ const MembershipReferenceAdminSchema = new Schema({
     type: String,
     default: null,
   },
+  badgeID: {
+    type: String,
+    default: null,
+  },
   issuingAdminDetails: {
     type: Schema.Types.ObjectId,
     ref: "Admin",
