@@ -25,43 +25,50 @@ export const StudentshipStatusValidation = z.object({
   }),
   faculty: z.string().min(1, {
     message: "Faculty must be at least 1 character.",
-  }), 
+  }),
   entryYear: z.date().max(new Date(), {
     message: "Entry Year must be a valid date in the past.",
-}),
+  }),
   exitYear: z.date().optional(),
   image: z.string().url().min(1),
 });
 
 export const StudentshipStatusValidation2 = z.object({
-    firstName: z.string().min(1, {
-      message: "Last Name must be at least 1 character.",
-    }),
-    lastName: z.string().min(1, {
-      message: "Last Name must be at least 1 character.",
-    }),
-    middleName: z.string().optional(), // Allow empty string
-    currentLevel: z.string().min(1, {
-      message: "Current Level must be at least 1 characters.",
-    }),
-    courseOfStudy: z.string().min(1, {
-      message: "Sub Type must be at least 1 character.",
-    }),
-    categoryOfStudy: z.string().min(1, {
-      message: "Category of Study must be at least 1 character.",
-    }),
-    studentId: z.string().min(1, {
-      message: "Staff ID must be at least 1 character.",
-    }),
-    info: z.string().optional(),
-    faculty: z.string().min(1, {
-      message: "Faculty must be at least 1 character.",
-    }), 
-    entryYear: z.date().max(new Date(), {
-      message: "Entry Year must be a valid date in the past.",
+  firstName: z.string().min(1, {
+    message: "First Name must be at least 1 character.",
   }),
-    exitYear: z.date().optional(),
-    image: z.string().url().min(1),
+  lastName: z.string().min(1, {
+    message: "Last Name must be at least 1 character.",
+  }),
+  middleName: z.string().optional(), // Allow empty string
+  currentLevel: z.string().min(1, {
+    message: "Current Level must be at least 1 characters.",
+  }),
+  courseOfStudy: z.string().min(1, {
+    message: "Course of Study must be at least 1 character.",
+  }),
+  categoryOfStudy: z.string().min(1, {
+    message: "Category of Study must be at least 1 character.",
+  }),
+  studentId: z.string().min(1, {
+    message: "Student ID must be at least 1 character.",
+  }),
+  info: z
+    .string()
+    .min(1, {
+      message: "Info must be at least 1 character.",
+    })
+    .max(40, {
+      message: "Info must be at most 40 characters.",
+    }),
+  faculty: z.string().min(1, {
+    message: "Faculty must be at least 1 character.",
+  }),
+  entryYear: z.date().max(new Date(), {
+    message: "Entry Year must be a valid date in the past.",
+  }),
+  exitYear: z.date().optional(),
+  image: z.string().url().min(1),
   orgName: z.string().min(1, {
     message: "Organization Name must be at least 1 character.",
   }),
@@ -98,4 +105,4 @@ export const StudentshipStatusValidation2 = z.object({
   contactPhone: z.string().min(1, {
     message: "Contact Person Phone number must be at least 1 character.",
   }),
-  });
+});

@@ -53,78 +53,78 @@ export default function Store() {
     fetchData();
   }, []);
 
-    return (
-        <main className="mt-[60px]">
-        <div className="">
-          <SearchBar />
-        </div>
-        {!isLoading ? (
-          <>
-            {(workReferenceDoc.length > 0 ||
-              memberReferenceDoc.length > 0 ||
-              docVerificationDoc.length > 0 ||
-              studentStatusDoc.length > 0) ? (
-              <div className="mt-10 overflow-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-center">
-                {/* Render cards for each type of document */}
-                {workReferenceDoc.map((doc: Documents) => (
-                  <Card3
-                    key={doc.DocId} // Ensure each Card component has a unique key
-                    heading={doc.heading}
-                    textColor={doc.textColor}
-                    bgColor={doc.bgColor}
-                    outlineColor={doc.outlineColor}
-                    link={doc.link}
-                  />
-                ))}
-                {memberReferenceDoc.map((doc: Documents) => (
-                  <Card3
-                    key={doc.DocId} // Ensure each Card component has a unique key
-                    heading={doc.heading}
-                    textColor={doc.textColor}
-                    bgColor={doc.bgColor}
-                    outlineColor={doc.outlineColor}
-                    link={doc.link}
-                  />
-                ))}
-                {docVerificationDoc.map((doc: Documents) => (
-                  <Card3
-                    key={doc.DocId} // Ensure each Card component has a unique key
-                    heading={doc.heading}
-                    textColor={doc.textColor}
-                    bgColor={doc.bgColor}
-                    outlineColor={doc.outlineColor}
-                    link={doc.link}
-                  />
-                ))}
-                {studentStatusDoc.map((doc: Documents) => (
-                  <Card3
-                    key={doc.DocId} // Ensure each Card component has a unique key
-                    heading={doc.heading}
-                    textColor={doc.textColor}
-                    bgColor={doc.bgColor}
-                    outlineColor={doc.outlineColor}
-                    link={doc.link}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full mt-[3rem]">
-                <Image
-                  src="/assets/images/error.png"
-                  alt="No Document Found"
-                  width={200}
-                  height={200}
+  return (
+    <main className="mt-[60px] mb-[5rem]">
+      <div className="">
+        <SearchBar />
+      </div>
+      {!isLoading ? (
+        <>
+          {workReferenceDoc.length > 0 ||
+          memberReferenceDoc.length > 0 ||
+          docVerificationDoc.length > 0 ||
+          studentStatusDoc.length > 0 ? (
+            <div className="mt-10 overflow-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-center">
+              {/* Render cards for each type of document */}
+              {workReferenceDoc.map((doc: Documents) => (
+                <Card3
+                  key={doc.DocId} // Ensure each Card component has a unique key
+                  heading={doc.heading}
+                  textColor={doc.textColor}
+                  bgColor={doc.bgColor}
+                  outlineColor={doc.outlineColor}
+                  link={doc.link}
                 />
-                <p className="text-center mt-2">You have no Documents yet!</p>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="flex items-center justify-center h-full mt-[3rem]">
-            <RiLoader4Line className="animate-spin text-2xl mb-4" />
-            <p className="font-bold">Loading...</p>
-          </div>
-        )}
-      </main>      
-    );
-  }
+              ))}
+              {memberReferenceDoc.map((doc: Documents) => (
+                <Card3
+                  key={doc.DocId} // Ensure each Card component has a unique key
+                  heading={doc.heading}
+                  textColor={doc.textColor}
+                  bgColor={doc.bgColor}
+                  outlineColor={doc.outlineColor}
+                  link={doc.link}
+                />
+              ))}
+              {docVerificationDoc.map((doc: Documents) => (
+                <Card3
+                  key={doc.DocId} // Ensure each Card component has a unique key
+                  heading={doc.heading}
+                  textColor={doc.textColor}
+                  bgColor={doc.bgColor}
+                  outlineColor={doc.outlineColor}
+                  link={doc.link}
+                />
+              ))}
+              {studentStatusDoc.map((doc: Documents) => (
+                <Card3
+                  key={doc.DocId} // Ensure each Card component has a unique key
+                  heading={doc.heading}
+                  textColor={doc.textColor}
+                  bgColor={doc.bgColor}
+                  outlineColor={doc.outlineColor}
+                  link={doc.link}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full mt-[3rem]">
+              <Image
+                src="/assets/images/error.png"
+                alt="No Document Found"
+                width={200}
+                height={200}
+              />
+              <p className="text-center mt-2">You have no Documents yet!</p>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="flex items-center justify-center h-full mt-[3rem]">
+          <RiLoader4Line className="animate-spin text-2xl mb-4" />
+          <p className="font-bold">Loading...</p>
+        </div>
+      )}
+    </main>
+  );
+}

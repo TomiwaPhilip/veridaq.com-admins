@@ -26,7 +26,10 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 
-import { createOrUpdateMembershipReference, getMemberReferenceById } from "@/lib/actions/request.action";
+import {
+  createOrUpdateMembershipReference,
+  getMemberReferenceById,
+} from "@/lib/actions/request.action";
 import { MembershipReferenceValidation2 } from "@/lib/validations/membershipreference";
 import { SuccessMessage, ErrorMessage } from "@/components/shared/shared";
 
@@ -595,7 +598,7 @@ const MembershipReference: React.FC<memberReferenceProps> = ({ docId }) => {
                       type="submit"
                       className="bg-[#38313A] px-7 py-5 rounded-md text-white"
                     >
-                      Submit
+                      Generate Veridaq
                     </button>
                   </div>
                 </div>

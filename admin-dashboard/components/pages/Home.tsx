@@ -1,15 +1,12 @@
 "use client";
 
-import Image from 'next/image';
-import { SearchBar, ListCard } from '../shared/shared';
+import Image from "next/image";
+import { SearchBar, ListCard } from "../shared/shared";
 import React, { useState, useEffect } from "react";
-import { RiLoader4Line } from 'react-icons/ri';
-import {
-  getUserDoc,
-} from "@/lib/actions/request.action";
+import { RiLoader4Line } from "react-icons/ri";
+import { getUserDoc } from "@/lib/actions/request.action";
 
 export default function HomePage() {
-
   interface Documents {
     userName: string;
     userType: string;
@@ -18,7 +15,6 @@ export default function HomePage() {
 
   const [userDoc, setUserDoc] = useState<Documents[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,10 +38,10 @@ export default function HomePage() {
           Your application now has {userDoc.length} users
         </p>
       </div>
-      <div className="">
+      <div className="my-5">
         <SearchBar />
       </div>
-      <div className="justify-center mt-[40px]">
+      <div className="justify-center mt-[40px] mb-[5rem]">
         {!isLoading ? (
           <>
             {userDoc.length > 0 ? (
@@ -76,6 +72,5 @@ export default function HomePage() {
         )}
       </div>
     </main>
-
   );
 }

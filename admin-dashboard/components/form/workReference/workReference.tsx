@@ -131,9 +131,7 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
 
     fetchWorkReferenceDoc();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-
   }, [docId]);
-
 
   const onSubmit = async (data: z.infer<typeof WorkReferenceValidation2>) => {
     console.log("I want to submit");
@@ -742,7 +740,7 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
                       type="submit"
                       className="bg-[#38313A] px-7 py-5 rounded-md text-white"
                     >
-                      Submit
+                      Generate Veridaq
                     </button>
                   </div>
                 </div>

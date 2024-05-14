@@ -25,7 +25,7 @@ export const WorkReferenceValidation = z.object({
   }),
   workStartDate: z.date().max(new Date(), {
     message: "Work Start Date must be a valid date in the past.",
-}),
+  }),
   workEndDate: z.date().optional(),
   department: z.string().min(1, {
     message: "Department must be at least 1 character.",
@@ -36,7 +36,6 @@ export const WorkReferenceValidation = z.object({
   }),
   personalitySummary: z.string().optional(), // Allow empty string
 });
-
 
 export const WorkReferenceValidation2 = z.object({
   firstName: z.string().min(1, {
@@ -60,16 +59,27 @@ export const WorkReferenceValidation2 = z.object({
   }),
   workStartDate: z.date().max(new Date(), {
     message: "Work Start Date must be a valid date in the past.",
-}),
+  }),
   workEndDate: z.date().optional(),
   department: z.string().min(1, {
     message: "Department must be at least 1 character.",
   }),
-  notableAchievement: z.string().optional(), // Allow empty string
-  jobFunction: z.string().min(1, {
-    message: "Function must be at least 1 character.",
-  }),
-  personalitySummary: z.string().optional(), // Allow empty string
+  notableAchievement: z
+    .string()
+    .max(30, "Notable Achievement must be at most 40 characters")
+    .optional(), // Allow empty string
+  jobFunction: z
+    .string()
+    .min(1, {
+      message: "Function must be at least 1 character.",
+    })
+    .max(40, {
+      message: "Function must be at most 40 characters.",
+    }),
+  personalitySummary: z
+    .string()
+    .max(30, "Personaliy Summary must be at most 40 characters")
+    .optional(), // Allow empty string
   orgName: z.string().min(1, {
     message: "Organization Name must be at least 1 character.",
   }),
@@ -107,4 +117,3 @@ export const WorkReferenceValidation2 = z.object({
     message: "Contact Person Phone number must be at least 1 character.",
   }),
 });
-

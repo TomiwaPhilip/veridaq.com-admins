@@ -33,7 +33,7 @@ export function useSession() {
 export function Nav() {
   const pathname = usePathname();
   return (
-    <nav className="bg-[#38313A] w-max min-h-screen p-4 flex flex-col fixed top-0 left-0 overflow-y-auto">
+    <nav className="bg-[#38313A] w-max min-h-screen p-4 flex flex-col fixed top-0 left-0 overflow-y-auto hidden lg:block">
       <Image
         alt="Veridaq logo"
         src="/assets/images/veridaq-logo.png"
@@ -41,7 +41,7 @@ export function Nav() {
         height={100}
         className="mx-auto"
       />
-      <div className="my-auto">
+      <div className="flex flex-col justify-center items-center min-h-screen">
         <ul className="list-none flex flex-col gap-2">
           <li
             className={`gradient-border rounded-md ${pathname === "/" ? "normal-gradient-border" : ""}`}
@@ -113,6 +113,78 @@ export function Nav() {
   );
 }
 
+export function BottomBar() {
+  const pathname = usePathname();
+
+  return (
+    <nav className="fixed bottom-0 left-0 w-full border-t border-gray-300 bg-gradient-to-t bg-[#38313A] pt-1 pb-2 backdrop-blur-2xl block rounded-t-lg lg:hidden">
+      <div className="flex items-center justify-between">
+        {/* Icon Links */}
+        <div className="text-center flex items-center justify-between w-full px-2 py-2">
+          <Link
+            href={"/"}
+            passHref
+            className={`cursor-pointer px-3 py-4 ${
+              pathname === "/" ? "border-2 border-[#EA098D] rounded-md" : ""
+            }`}
+          >
+            <img
+              src={"/assets/icons/users.svg"}
+              alt="Home"
+              className="w-8 h-8"
+            />
+          </Link>
+          <Link
+            href={"/veridaq-box"}
+            passHref
+            className={`cursor-pointer px-3 py-4 ${
+              pathname === "/veridaq-box"
+                ? "border-2 border-[#EA098D] rounded-md"
+                : ""
+            }`}
+          >
+            <img
+              src={"/assets/icons/message.svg"}
+              alt="message"
+              className="w-8 h-8"
+            />
+          </Link>
+          <Link
+            href={"/veridaq-store"}
+            passHref
+            className={`cursor-pointer px-3 py-4 ${
+              pathname === "/veridaq-store"
+                ? "border-2 border-[#EA098D] rounded-md"
+                : ""
+            }`}
+          >
+            <img
+              src={"/assets/icons/security.svg"}
+              alt="send"
+              className="w-8 h-8"
+            />
+          </Link>
+          <Link
+            href={"/settings"}
+            passHref
+            className={`cursor-pointer px-3 py-4 ${
+              pathname === "/settings"
+                ? "border-2 border-[#EA098D] rounded-md"
+                : ""
+            }`}
+          >
+            <img
+              src={"/assets/icons/settings.svg"}
+              alt="settings"
+              className="w-8 h-8"
+            />
+          </Link>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
 const handleSignOut = async () => {
   await signOut();
 };
@@ -124,55 +196,50 @@ export function Header() {
   const name = session?.firstName;
 
   return (
-    <header className="flex items-center gap-4">
+    <header className="flex items-center justify-between text-[23px] w-full md:text-[32px] gap-10">
       {pathname === "/" && (
-        <p className="text-[32px] font-semibold text-gradient mr-auto">
+        <p className="font-semibold text-gradient mr-auto">
           {`Welcome to Veridaq, ${name}`}
         </p>
       )}
       {pathname === "/veridaq-box" && (
-        <p className="text-[32px] font-semibold text-gradient mr-auto">
+        <p className="font-semibold text-gradient mr-auto">
           Receive mails or Issue Veridaq, here.
         </p>
       )}
       {pathname === "/veridaq-store" && (
-        <p className="text-[32px] font-semibold text-gradient mr-auto">
+        <p className="font-semibold text-gradient mr-auto">
           Download and share your Veridaq, here.
         </p>
       )}
       {pathname === "/settings" && (
-        <p className="text-[32px] font-semibold text-gradient mr-auto">
+        <p className="font-semibold text-gradient mr-auto">
           Configure your Veridaq Admin, here.
         </p>
       )}
-      <Image
-        alt="notifications"
-        src="/assets/icons/bell.svg"
-        width={35}
-        height={35}
-      />
-      {session?.image ? (
-        <Image
-          alt="user"
-          src={session.image as string}
-          className="rounded-full aspect-square object-cover normal-border"
-          width={50}
-          height={50}
-          onClick={handleSignOut}
-          style={{ cursor: "pointer" }}
-        />
-      ) : (
-        <Image
-          alt="fallback"
-          src="/assets/images/user.png"
-          className="rounded-full aspect-square object-cover normal-border"
-          width={50}
-          height={50}
-          onClick={handleSignOut}
-          style={{ cursor: "pointer" }}
-        />
-      )}
-
+      <div className="text-right">
+        {session?.image ? (
+          <Image
+            alt="user"
+            src={session.image as string}
+            className="rounded-full aspect-square object-cover normal-border"
+            width={50}
+            height={50}
+            onClick={handleSignOut}
+            style={{ cursor: "pointer" }}
+          />
+        ) : (
+          <Image
+            alt="fallback"
+            src="/assets/images/user.png"
+            className="rounded-full aspect-square object-cover normal-border"
+            width={50}
+            height={50}
+            onClick={handleSignOut}
+            style={{ cursor: "pointer" }}
+          />
+        )}
+      </div>
     </header>
   );
 }
@@ -318,9 +385,9 @@ export function Card3({
             >
               {copy}
             </button>
-            <Link href={link}>
+            <a href={link} target="_blank">
               <button className="block w-full py-2 px-4 text-left">Open</button>
-            </Link>
+            </a>
           </div>
         )}
       </div>
@@ -610,3 +677,33 @@ export function ListCard({
     </div>
   );
 }
+
+interface StatusMessageProps {
+  message: string;
+  type: "error" | "success";
+}
+
+export const StatusMessage: React.FC<StatusMessageProps> = ({
+  message,
+  type,
+}) => {
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+    }, 10000); // Message disappears after 3 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div
+      className={`fixed top-5 right-5 p-3 rounded-md text-white ${
+        type === "error" ? "bg-red-500" : "bg-green-500"
+      } ${isVisible ? "opacity-100" : "opacity-0"}`}
+    >
+      {message}
+    </div>
+  );
+};

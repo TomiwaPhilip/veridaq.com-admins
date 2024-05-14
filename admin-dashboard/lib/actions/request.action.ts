@@ -579,8 +579,7 @@ export async function createOrUpdateDocumentVerificationRequest(
       badgeID: badgeID,
     };
 
-    const url =
-      "https://generator-abfcaoddhq-bq.a.run.app/document-verification";
+    const url = "https://generator-abfcaoddhq-bq.a.run.app/doc-verification";
     const docName = "docVerification.pdf";
 
     const result = await getDocAndUpload(data, url, docName);

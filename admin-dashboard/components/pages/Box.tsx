@@ -72,8 +72,8 @@ export default function Box() {
           Pending Veridaq Issuance from Veridaq Request to your Organization
         </p>
         <div className="mt-10">
-          <div className="flex-1">
-            <div className="p-7 bg-[#C3B8D8] rounded-lg h-full">
+          <div className="">
+            <div className="p-7 bg-[#C3B8D8] rounded-lg h-full mb-[5rem]">
               <div className="">
                 <SearchBar2 />
               </div>

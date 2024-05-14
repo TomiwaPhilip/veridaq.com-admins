@@ -23,7 +23,10 @@ import { z } from "zod";
 import Image from "next/image";
 import { upload } from "@vercel/blob/client";
 
-import { createOrUpdateDocumentVerificationRequest, getDocVerificationById } from "@/lib/actions/request.action";
+import {
+  createOrUpdateDocumentVerificationRequest,
+  getDocVerificationById,
+} from "@/lib/actions/request.action";
 import { DocumentVerificationValidation2 } from "@/lib/validations/documentverification";
 import { SuccessMessage, ErrorMessage } from "@/components/shared/shared";
 
@@ -65,7 +68,7 @@ const DocumentVerification: React.FC<documentVerificationProps> = ({
             lastName,
             middleName,
             documentType,
-            documentName, 
+            documentName,
             id,
             info,
             image,
@@ -604,7 +607,7 @@ const DocumentVerification: React.FC<documentVerificationProps> = ({
                       type="submit"
                       className="bg-[#38313A] px-7 py-5 rounded-md text-white"
                     >
-                      Submit
+                      Generate Veridaq
                     </button>
                   </div>
                 </div>

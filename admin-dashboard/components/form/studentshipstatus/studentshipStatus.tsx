@@ -33,7 +33,10 @@ import { z } from "zod";
 import Image from "next/image";
 import { upload } from "@vercel/blob/client";
 
-import { createOrUpdateStudentshipStatus, getStudentshipStatusById } from "@/lib/actions/request.action";
+import {
+  createOrUpdateStudentshipStatus,
+  getStudentshipStatusById,
+} from "@/lib/actions/request.action";
 import { StudentshipStatusValidation2 } from "@/lib/validations/studentshipstatus";
 import { SuccessMessage, ErrorMessage } from "@/components/shared/shared";
 
@@ -277,9 +280,9 @@ const StudentshipStatus: React.FC<studentStatusProps> = ({ docId }) => {
                           <SelectContent>
                             <SelectItem value="100L">100L</SelectItem>
                             <SelectItem value="200L">200L</SelectItem>
-                            <SelectItem value="100L">300L</SelectItem>
-                            <SelectItem value="200L">400L</SelectItem>
-                            <SelectItem value="200L">500L</SelectItem>
+                            <SelectItem value="300L">300L</SelectItem>
+                            <SelectItem value="400L">400L</SelectItem>
+                            <SelectItem value="500L">500L</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -304,7 +307,7 @@ const StudentshipStatus: React.FC<studentStatusProps> = ({ docId }) => {
                       </FormItem>
                     )}
                   />
-                <FormField
+                  <FormField
                     control={form.control}
                     name="categoryOfStudy"
                     render={({ field }) => (
@@ -318,7 +321,7 @@ const StudentshipStatus: React.FC<studentStatusProps> = ({ docId }) => {
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a Current Level" />
+                              <SelectValue placeholder="Select a Category" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -790,7 +793,7 @@ const StudentshipStatus: React.FC<studentStatusProps> = ({ docId }) => {
                       type="submit"
                       className="bg-[#38313A] px-7 py-5 rounded-md text-white"
                     >
-                      Submit
+                      Generate Veridaq
                     </button>
                   </div>
                 </div>
