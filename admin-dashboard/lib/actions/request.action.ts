@@ -14,7 +14,7 @@ import {
   getCurrentDateTime,
 } from "../utils";
 import { getDocAndUpload } from "./server-hooks/requestWithUpload.action";
-import Admin from "../utils/adminSchema";
+import { Admin, IAdmin, IAdminModel } from "../utils/adminSchema";
 
 interface Params {
   firstName: string;
@@ -1127,18 +1127,15 @@ export async function getTeamMembers() {
     }
 
     // Connect to the database
-    connectToDB();
+    await connectToDB();
 
-    // Query the Role collection without filtering by organization
-    const roles = await Admin.find().select({
-      adminFirstName: 1,
-      adminLastName: 1,
-      role: 1,
-      designation: 1,
-    });
+    // Query the Admin collection
+    const roles = await Admin.find().select(
+      "adminFirstName adminLastName role designation",
+    );
 
     // Format the data before returning to the frontend
-    const formattedData = roles.map((doc) => ({
+    const formattedData = roles.map((doc: IAdmin) => ({
       heading: `${doc.adminFirstName} ${doc.adminLastName}`,
       DocId: doc._id.toString(),
       role: doc.designation,

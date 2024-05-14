@@ -423,7 +423,9 @@ export function Card4({
     >
       <div className="flex flex-col items-center justify-center mb-4">
         <p className="font-bold text-lg">{heading}</p>
-        <p className="text-white italic text-sm font-bold">{rights}</p>
+        <p className="italic text-sm font-bold" style={{ color: textColor }}>
+          {rights}
+        </p>
       </div>
       <p className="font-bold text-sm text-center" style={{ color: textColor }}>
         {role}
