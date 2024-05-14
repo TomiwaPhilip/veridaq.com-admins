@@ -1118,35 +1118,35 @@ export async function getUserDoc() {
   }
 }
 
-export async function getTeamMembers() {
-  try {
-    const session = await getSession();
+// export async function getTeamMembers() {
+//   try {
+//     const session = await getSession();
 
-    if (!session || session.role !== "admin") {
-      throw new Error("Unauthorized");
-    }
+//     if (!session || session.role !== "admin") {
+//       throw new Error("Unauthorized");
+//     }
 
-    // Connect to the database
-    await connectToDB();
+//     // Connect to the database
+//     await connectToDB();
 
-    // Query the Admin collection
-    const roles = await Admin.find().select(
-      "adminFirstName adminLastName role designation",
-    );
+//     // Query the Admin collection
+//     const roles = await Admin.find().select(
+//       "adminFirstName adminLastName role designation",
+//     );
 
-    // Format the data before returning to the frontend
-    const formattedData = roles.map((doc: IAdmin) => ({
-      heading: `${doc.adminFirstName} ${doc.adminLastName}`,
-      DocId: doc._id.toString(),
-      role: doc.designation,
-      roles: doc.role,
-    }));
+//     // Format the data before returning to the frontend
+//     const formattedData = roles.map((doc: IAdmin) => ({
+//       heading: `${doc.adminFirstName} ${doc.adminLastName}`,
+//       DocId: doc._id.toString(),
+//       role: doc.designation,
+//       roles: doc.role,
+//     }));
 
-    console.log(formattedData);
+//     console.log(formattedData);
 
-    return formattedData;
-  } catch (error: any) {
-    console.error(error);
-    throw new Error("Failed to fetch team members");
-  }
-}
+//     return formattedData;
+//   } catch (error: any) {
+//     console.error(error);
+//     throw new Error("Failed to fetch team members");
+//   }
+// }
