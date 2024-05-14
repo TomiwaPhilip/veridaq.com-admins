@@ -1,5 +1,19 @@
 import React from "react";
 
-export default function Page(){
-    return <h1>This is the settings page</h1>
+import SettingsPage from "@/components/pages/Settings";
+import getSession from "@/lib/actions/server-hooks/getsession.action";
+
+export default async function Page(){
+    const session = await getSession()
+
+    if(session?.role !== "Admin") {
+        return (
+            <div className="font-bold text-center mt-[12rem]">
+                <p> You are not authorized to view this page. Contact your organization Admin.</p>
+            </div>
+        )
+    }
+    return (
+        <SettingsPage />
+    )
 }

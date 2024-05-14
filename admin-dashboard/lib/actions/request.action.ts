@@ -14,6 +14,7 @@ import {
   getCurrentDateTime,
 } from "../utils";
 import { getDocAndUpload } from "./server-hooks/requestWithUpload.action";
+import Admin from "../utils/adminSchema";
 
 interface Params {
   firstName: string;
@@ -1071,12 +1072,16 @@ export async function getUserDoc() {
     }
 
     // Get users with firstname, lastname, and MongoDB ID
-    const users = await User.find().select("firstname lastname _id");
+    const users = await User.find({ onboarded: true }).select(
+      "firstname lastname _id",
+    );
 
     console.log("users", users);
 
     // Get organizations with orgName and MongoDB ID
-    const organizations = await Organization.find().select("name _id");
+    const organizations = await Organization.find({ onboarded: true }).select(
+      "name _id",
+    );
 
     console.log("organizations", organizations);
 
@@ -1110,5 +1115,38 @@ export async function getUserDoc() {
       "An error occurred while trying to query DB for users",
       error,
     );
+  }
+}
+
+export async function getTeamMembers() {
+  try {
+    const session = await getSession();
+
+    if (!session || session.role !== "Admin") {
+      throw new Error("Unauthorized");
+    }
+
+    // Connect to the database
+    connectToDB();
+
+    // Query the Role collection without filtering by organization
+    const roles = await Admin.find().select(
+      "adminFirstName adminLastName role designation",
+    );
+
+    // Format the data before returning to the frontend
+    const formattedData = roles.map((doc) => ({
+      heading: `${doc.adminFirstName} ${doc.adminLastName}`,
+      DocId: doc._id.toString(),
+      role: doc.designation,
+      roles: doc.role,
+    }));
+
+    console.log(formattedData);
+
+    return formattedData;
+  } catch (error: any) {
+    console.error(error);
+    throw new Error("Failed to fetch team members");
   }
 }

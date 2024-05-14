@@ -1,10 +1,10 @@
-import { Schema, model, models } from 'mongoose';
+import { Schema, model, models } from "mongoose";
 
 const AdminSchema = new Schema({
   email: {
     type: String,
-    unique: [true, 'Email already exists!'],
-    required: [true, 'Email is required!'],
+    unique: [true, "Email already exists!"],
+    required: [true, "Email is required!"],
   },
   adminFirstName: {
     type: String,
@@ -12,14 +12,16 @@ const AdminSchema = new Schema({
   adminLastName: {
     type: String,
   },
+  designation: {
+    type: String,
+  },
+  role: {
+    type: String,
+    enum: ["Admin", "Member"],
+  },
   image: {
     type: String,
   },
-  // loginType: {
-  //   type: String,
-  //   enum: ['email', 'google', 'linkedin'],
-  //   required: [true, 'The login type is required']
-  // }
 });
 
 const Admin = models.Admin || model("Admin", AdminSchema);

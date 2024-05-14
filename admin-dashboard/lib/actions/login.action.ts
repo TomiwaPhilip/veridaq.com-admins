@@ -85,6 +85,7 @@ export async function verifyUserToken(token: string): Promise<boolean> {
           firstName: existingUser.adminFirstName,
           lastName: existingUser.adminLastName,
           image: existingUser.image, // Initialize image as an empty string
+          role: existingUser.role,
           isLoggedIn: true,
         };
 
