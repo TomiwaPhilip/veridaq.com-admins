@@ -181,8 +181,8 @@ const ModalForm: React.FC<ModalForm> = ({ onClose }) => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent position="popper">
-                          <SelectItem value="Admin">Admin</SelectItem>
-                          <SelectItem value="Member">Member</SelectItem>
+                          <SelectItem value="admin">Admin</SelectItem>
+                          <SelectItem value="member">Member</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />

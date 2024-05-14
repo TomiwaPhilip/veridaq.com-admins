@@ -1122,7 +1122,7 @@ export async function getTeamMembers() {
   try {
     const session = await getSession();
 
-    if (!session || session.role !== "Admin") {
+    if (!session || session.role !== "admin") {
       throw new Error("Unauthorized");
     }
 
@@ -1130,9 +1130,12 @@ export async function getTeamMembers() {
     connectToDB();
 
     // Query the Role collection without filtering by organization
-    const roles = await Admin.find().select(
-      "adminFirstName adminLastName role designation",
-    );
+    const roles = await Admin.find().select({
+      adminFirstName: 1,
+      adminLastName: 1,
+      role: 1,
+      designation: 1,
+    });
 
     // Format the data before returning to the frontend
     const formattedData = roles.map((doc) => ({

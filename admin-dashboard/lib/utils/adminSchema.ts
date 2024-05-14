@@ -17,7 +17,7 @@ const AdminSchema = new Schema({
   },
   role: {
     type: String,
-    enum: ["Admin", "Member"],
+    enum: ["admin", "member"],
   },
   image: {
     type: String,
