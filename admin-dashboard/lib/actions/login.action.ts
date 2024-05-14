@@ -19,7 +19,7 @@ export async function signIn(email: string) {
     // Generate token and URL for verification
     const { token, generatedAt, expiresIn } = generateToken();
 
-    const url = `https://organic-enigma-r475wrq4j6gvhpp9w-3000.app.github.dev/auth/verify?token=${token}`;
+    const url = `https://admin.veridaq.com/auth/verify?token=${token}`;
 
     // Send email with resend.dev
     await sendVerificationRequest({ url: url, email: email });
