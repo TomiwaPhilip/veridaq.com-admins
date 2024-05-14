@@ -18,6 +18,7 @@ const AdminSchema = new Schema({
   role: {
     type: String,
     enum: ["admin", "member"],
+    required: [true, "Adminsitrative role is required!"],
   },
   image: {
     type: String,

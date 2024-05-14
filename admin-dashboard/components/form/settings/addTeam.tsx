@@ -107,7 +107,7 @@ export default function AddTeam() {
             </>
           ) : (
             <p className="text-red-500">
-              You don't have rights to this setting.
+              You do not have rights to this setting.
             </p>
           )}
 
