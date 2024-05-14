@@ -14,7 +14,7 @@ import {
   getCurrentDateTime,
 } from "../utils";
 import { getDocAndUpload } from "./server-hooks/requestWithUpload.action";
-import { Admin, IAdmin, IAdminModel } from "../utils/adminSchema";
+import Admin from "../utils/adminSchema";
 
 interface Params {
   firstName: string;
