@@ -1,6 +1,6 @@
 import React from "react";
 
-import SettingsPage from "@/components/pages/Settings";
+// import SettingsPage from "@/components/pages/Settings";
 import getSession from "@/lib/actions/server-hooks/getsession.action";
 
 export default async function Page(){
@@ -16,6 +16,7 @@ export default async function Page(){
         )
     }
     return (
-        <SettingsPage />
+        // <SettingsPage />
+        <p> Settings Page </p>
     )
 }
