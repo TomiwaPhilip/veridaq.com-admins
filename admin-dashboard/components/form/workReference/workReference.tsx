@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent, useRef } from "react";
 import {
   Form,
   FormControl,
@@ -37,6 +37,8 @@ import {
 } from "@/lib/actions/request.action";
 import { WorkReferenceValidation2 } from "@/lib/validations/workreference";
 import { SuccessMessage, ErrorMessage } from "@/components/shared/shared";
+import Image from "next/image";
+import { upload } from "@vercel/blob/client";
 
 interface WorkReferenceProps {
   docId?: string | null;
@@ -45,6 +47,7 @@ interface WorkReferenceProps {
 const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
   const [step, setStep] = useState(1);
   const [requestResult, setRequestResult] = useState<boolean | null>(null);
+  const inputFileRef = useRef<HTMLInputElement>(null);
 
   const handleNextStep = () => {
     setStep(step + 1);
@@ -76,6 +79,7 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
             subType,
             staffId,
             designation,
+            image,
             department,
             notableAchievement,
             jobFunction,
@@ -103,6 +107,7 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
             subType,
             staffId,
             designation,
+            image,
             department,
             notableAchievement,
             jobFunction,
@@ -133,6 +138,39 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [docId]);
 
+  const handleImage = async (
+    e: ChangeEvent<HTMLInputElement>,
+    fieldChange: (value: string) => void,
+  ) => {
+    e.preventDefault();
+
+    const fileReader = new FileReader();
+    if (!inputFileRef.current?.files) {
+      throw new Error("No file selected");
+    }
+
+    const file = inputFileRef.current.files[0];
+
+    fileReader.onload = async (e) => {
+      const fileData = e.target?.result;
+      if (typeof fileData === "string") {
+        try {
+          const newBlob = await upload(file.name, file, {
+            access: "public",
+            handleUploadUrl: "/api/avatar/upload",
+          });
+
+          // Update the form data with the new blob URL
+          fieldChange(newBlob.url);
+        } catch (error) {
+          console.error("Error uploading file:", error);
+        }
+      }
+    };
+
+    fileReader.readAsDataURL(file);
+  };
+
   const onSubmit = async (data: z.infer<typeof WorkReferenceValidation2>) => {
     console.log("I want to submit");
     try {
@@ -144,6 +182,7 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
         subType: data.subType,
         staffId: data.staffId,
         designation: data.designation,
+        image: data.image,
         workStartDate: data.workStartDate,
         workEndDate: data.workEndDate,
         department: data.department,
@@ -309,6 +348,50 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
                           <Input placeholder="Snr." {...field} />
                         </FormControl>
                         <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="image"
+                    render={({ field }) => (
+                      <FormItem className="flex items-center gap-4">
+                        <FormLabel className="account-form_image-label">
+                          {field.value ? (
+                            <Image
+                              src={field.value}
+                              alt="image"
+                              width={96}
+                              height={96}
+                              priority
+                              className="rounded-full aspect-square object-cover"
+                            />
+                          ) : (
+                            <Image
+                              src="/assets/icons/avatar.png"
+                              alt="image"
+                              width={96}
+                              height={96}
+                              className="rounded-full aspect-square object-cover"
+                            />
+                          )}
+                        </FormLabel>
+                        <label
+                          htmlFor="image"
+                          className="text-[#3344A8] cursor-pointer text-[20px] font-medium"
+                        >
+                          Any Supporting Documents (Optional)
+                        </label>
+                        <FormControl className="flex-1 text-base-semibold text-gray-200">
+                          <Input
+                            type="file"
+                            accept="image/*,application/pdf"
+                            ref={inputFileRef}
+                            placeholder="Upload Profile Photo or PDF"
+                            className="hidden"
+                            onChange={(e) => handleImage(e, field.onChange)}
+                          />
+                        </FormControl>
                       </FormItem>
                     )}
                   />

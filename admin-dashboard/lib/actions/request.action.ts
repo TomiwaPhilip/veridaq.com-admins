@@ -24,6 +24,7 @@ interface Params {
   subType: string;
   staffId: string;
   designation: string;
+  image?: string;
   workStartDate: Date;
   workEndDate: Date | undefined; // Nullable workEndDate field
   department: string;
@@ -56,6 +57,7 @@ export async function createOrUpdateWorkReferenceRequest({
   subType,
   staffId,
   designation,
+  image,
   workStartDate,
   workEndDate,
   department,
@@ -122,6 +124,7 @@ export async function createOrUpdateWorkReferenceRequest({
             subType,
             staffId,
             designation,
+            image,
             workStartDate,
             workEndDate,
             department,
@@ -167,6 +170,7 @@ export async function createOrUpdateWorkReferenceRequest({
           subType,
           staffId,
           designation,
+          image,
           workStartDate,
           workEndDate,
           department,

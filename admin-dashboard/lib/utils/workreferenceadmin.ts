@@ -32,6 +32,9 @@ const WorkReferenceAdminSchema = new Schema({
     required: [true, "Designation is required"],
     minlength: 1,
   },
+  image: {
+    type: String,
+  },
   workStartDate: {
     type: Date,
     required: [true, "Work Start Date is required"],

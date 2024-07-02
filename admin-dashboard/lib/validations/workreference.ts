@@ -57,6 +57,7 @@ export const WorkReferenceValidation2 = z.object({
   designation: z.string().min(1, {
     message: "Designation must be at least 1 character.",
   }),
+  image: z.string().url().optional(),
   workStartDate: z.date().max(new Date(), {
     message: "Work Start Date must be a valid date in the past.",
   }),
