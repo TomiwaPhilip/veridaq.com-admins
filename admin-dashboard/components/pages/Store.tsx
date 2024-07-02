@@ -24,9 +24,9 @@ export default function Store() {
   }
 
   const [workReferenceDoc, setWorkReferenceDoc] = useState<Documents[]>([]);
-  const [memberReferenceDoc, setMemberReferenceDoc] = useState<Documents[]>([]);
-  const [docVerificationDoc, setDocVerificationDoc] = useState<Documents[]>([]);
-  const [studentStatusDoc, setStudentStatusDoc] = useState<Documents[]>([]);
+  // const [memberReferenceDoc, setMemberReferenceDoc] = useState<Documents[]>([]);
+  // const [docVerificationDoc, setDocVerificationDoc] = useState<Documents[]>([]);
+  // const [studentStatusDoc, setStudentStatusDoc] = useState<Documents[]>([]);
   const session = useSession();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -36,14 +36,14 @@ export default function Store() {
         const doc1 = await getIssuedWorkReference();
         if (doc1) setWorkReferenceDoc(doc1);
 
-        const doc2 = await getIssuedMemberReference();
-        if (doc2) setMemberReferenceDoc(doc2);
+        // const doc2 = await getIssuedMemberReference();
+        // if (doc2) setMemberReferenceDoc(doc2);
 
-        const doc3 = await getIssuedDocVerification();
-        if (doc3) setDocVerificationDoc(doc3);
+        // const doc3 = await getIssuedDocVerification();
+        // if (doc3) setDocVerificationDoc(doc3);
 
-        const doc4 = await getIssuedStudentshipStatus();
-        if (doc4) setStudentStatusDoc(doc4);
+        // const doc4 = await getIssuedStudentshipStatus();
+        // if (doc4) setStudentStatusDoc(doc4);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching documents:", error);
@@ -60,10 +60,7 @@ export default function Store() {
       </div>
       {!isLoading ? (
         <>
-          {workReferenceDoc.length > 0 ||
-          memberReferenceDoc.length > 0 ||
-          docVerificationDoc.length > 0 ||
-          studentStatusDoc.length > 0 ? (
+          {workReferenceDoc.length > 0 ? (
             <div className="mt-10 overflow-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-center">
               {/* Render cards for each type of document */}
               {workReferenceDoc.map((doc: Documents) => (
@@ -76,7 +73,7 @@ export default function Store() {
                   link={doc.link}
                 />
               ))}
-              {memberReferenceDoc.map((doc: Documents) => (
+              {/* {memberReferenceDoc.map((doc: Documents) => (
                 <Card3
                   key={doc.DocId} // Ensure each Card component has a unique key
                   heading={doc.heading}
@@ -105,7 +102,7 @@ export default function Store() {
                   outlineColor={doc.outlineColor}
                   link={doc.link}
                 />
-              ))}
+              ))} */}
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-full mt-[3rem]">

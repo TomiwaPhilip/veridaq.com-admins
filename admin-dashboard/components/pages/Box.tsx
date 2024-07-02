@@ -23,9 +23,9 @@ export default function Box() {
   const [openModalId, setOpenModalId] = useState<string | null>(null);
   const [openModalDocId, setOpenModalDocId] = useState<string | null>(null);
   const [workReferenceDoc, setWorkReferenceDoc] = useState<Documents[]>([]);
-  const [memberReferenceDoc, setMemberReferenceDoc] = useState<Documents[]>([]);
-  const [docVerificationDoc, setDocVerificationDoc] = useState<Documents[]>([]);
-  const [studentStatusDoc, setStudentStatusDoc] = useState<Documents[]>([]);
+  // const [memberReferenceDoc, setMemberReferenceDoc] = useState<Documents[]>([]);
+  // const [docVerificationDoc, setDocVerificationDoc] = useState<Documents[]>([]);
+  // const [studentStatusDoc, setStudentStatusDoc] = useState<Documents[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -34,14 +34,14 @@ export default function Box() {
         const doc1 = await getWorkReference();
         if (doc1) setWorkReferenceDoc(doc1);
 
-        const doc2 = await getMemberReference();
-        if (doc2) setMemberReferenceDoc(doc2);
+        // const doc2 = await getMemberReference();
+        // if (doc2) setMemberReferenceDoc(doc2);
 
-        const doc3 = await getDocVerification();
-        if (doc3) setDocVerificationDoc(doc3);
+        // const doc3 = await getDocVerification();
+        // if (doc3) setDocVerificationDoc(doc3);
 
-        const doc4 = await getStudentshipStatus();
-        if (doc4) setStudentStatusDoc(doc4);
+        // const doc4 = await getStudentshipStatus();
+        // if (doc4) setStudentStatusDoc(doc4);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching documents:", error);
@@ -80,10 +80,7 @@ export default function Box() {
               <div className="mt-10 overflow-auto">
                 {!isLoading ? (
                   <>
-                    {workReferenceDoc.length > 0 ||
-                    memberReferenceDoc.length > 0 ||
-                    docVerificationDoc.length > 0 ||
-                    studentStatusDoc.length > 0 ? (
+                    {workReferenceDoc.length > 0 ? (
                       <>
                         {workReferenceDoc.map((doc: Documents) => (
                           <VeridaqDocument
@@ -95,7 +92,7 @@ export default function Box() {
                             onClick={handleOpenModal}
                           />
                         ))}
-                        {memberReferenceDoc.map((doc: Documents) => (
+                        {/* {memberReferenceDoc.map((doc: Documents) => (
                           <VeridaqDocument
                             key={doc.DocId}
                             DocDetails={doc.DocDetails}
@@ -124,7 +121,7 @@ export default function Box() {
                             id="2"
                             onClick={handleOpenModal}
                           />
-                        ))}
+                        ))} */}
                       </>
                     ) : (
                       <div className="flex flex-col items-center justify-center h-full">
