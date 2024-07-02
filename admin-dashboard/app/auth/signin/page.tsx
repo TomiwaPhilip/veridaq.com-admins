@@ -28,7 +28,7 @@ const formSchema = z.object({
 });
 
 export default function SignIn() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setIsLoading] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [isError, setIsError] = useState(false);
 
@@ -95,8 +95,9 @@ export default function SignIn() {
               <div className="text-center">
                 <NoOutlineButtonBig
                   type="submit"
-                  name={isLoading ? "Sending Email..." : "Send Magic Link"}
-                  disabled={isLoading}
+                  name={"Send Magic Link"}
+                  disabled={loading}
+                  loading={loading}
                 />
               </div>
             </form>
