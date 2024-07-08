@@ -1,12 +1,13 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
-import StepperForm from "./Stepper";
+import React, { useState } from "react"
+import StepperForm from "./Stepper"
+import { RiCloseCircleFill } from "react-icons/ri"
 
 interface ModalWithStepperProps {
-  id: string;
-  docId?: string | null;
-  onClose: () => void;
+  id: string
+  docId?: string | null
+  onClose: () => void
 }
 
 const ModalWithStepper: React.FC<ModalWithStepperProps> = ({
@@ -20,13 +21,21 @@ const ModalWithStepper: React.FC<ModalWithStepperProps> = ({
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-lg normal-border w-full max-h-[55vh] h-[55vh] overflow-auto mx-5 md:mx-0 md:w-[70%] max-h-[70%] h-[70%]"
+        className="bg-white shadow-lg w-[100vw] overflow-auto md:mx-0 md:w-[100vw] h-[100vh] pt-10"
         onClick={(e) => e.stopPropagation()}
       >
-        <StepperForm id={id} docId={docId} />
+        <div className="md:max-w-[60%] mx-auto mb-16">
+          <StepperForm id={id} docId={docId} />
+        </div>
+        <div>
+          <RiCloseCircleFill
+            className="text-violet-400 text-3xl cursor-pointer absolute top-7 right-7 z-[20]"
+            onClick={onClose}
+          />
+        </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ModalWithStepper;
+export default ModalWithStepper
