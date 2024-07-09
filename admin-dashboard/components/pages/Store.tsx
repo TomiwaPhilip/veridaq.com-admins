@@ -8,6 +8,7 @@ import { useSession } from "@/components/shared/shared";
 import { SearchBar, Card3 } from "@/components/shared/shared";
 import {
   getIssuedDocVerification,
+  getIssuedHandsOnReference,
   getIssuedMemberReference,
   getIssuedStudentshipStatus,
   getIssuedWorkReference,
@@ -24,7 +25,7 @@ export default function Store() {
   }
 
   const [workReferenceDoc, setWorkReferenceDoc] = useState<Documents[]>([]);
-  // const [memberReferenceDoc, setMemberReferenceDoc] = useState<Documents[]>([]);
+  const [handsOnReferenceDoc, setHandsOnReferenceDoc] = useState<Documents[]>([]);
   // const [docVerificationDoc, setDocVerificationDoc] = useState<Documents[]>([]);
   // const [studentStatusDoc, setStudentStatusDoc] = useState<Documents[]>([]);
   const session = useSession();
@@ -36,8 +37,8 @@ export default function Store() {
         const doc1 = await getIssuedWorkReference();
         if (doc1) setWorkReferenceDoc(doc1);
 
-        // const doc2 = await getIssuedMemberReference();
-        // if (doc2) setMemberReferenceDoc(doc2);
+        const doc2 = await getIssuedHandsOnReference();
+        if (doc2) setHandsOnReferenceDoc(doc2);
 
         // const doc3 = await getIssuedDocVerification();
         // if (doc3) setDocVerificationDoc(doc3);
@@ -73,7 +74,7 @@ export default function Store() {
                   link={doc.link}
                 />
               ))}
-              {/* {memberReferenceDoc.map((doc: Documents) => (
+              {handsOnReferenceDoc.map((doc: Documents) => (
                 <Card3
                   key={doc.DocId} // Ensure each Card component has a unique key
                   heading={doc.heading}
@@ -83,7 +84,7 @@ export default function Store() {
                   link={doc.link}
                 />
               ))}
-              {docVerificationDoc.map((doc: Documents) => (
+              {/* {docVerificationDoc.map((doc: Documents) => (
                 <Card3
                   key={doc.DocId} // Ensure each Card component has a unique key
                   heading={doc.heading}
