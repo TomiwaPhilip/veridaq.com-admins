@@ -59,11 +59,13 @@ export function BlackButton({
   name,
   type,
   disabled,
+  loading,
   onClick,
 }: {
   name: string;
   type: "submit" | "button";
   disabled?: boolean;
+  loading?: boolean;
   onClick?: () => void;
 }) {
   return (
@@ -73,7 +75,7 @@ export function BlackButton({
       disabled={disabled}
       onClick={onClick}
     >
-      {name}
+      {loading ? <RiLoader4Line className="animate-spin text-2xl" /> : name}
     </button>
   );
 }

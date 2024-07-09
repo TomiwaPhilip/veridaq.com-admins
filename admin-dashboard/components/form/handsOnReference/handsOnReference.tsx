@@ -43,6 +43,7 @@ import { SuccessMessage, ErrorMessage } from "@/components/shared/shared";
 import Image from "next/image";
 import { upload } from "@vercel/blob/client";
 import { HandsOnReferenceValidation2 } from "@/lib/validations/handsOnReference";
+import { BlackButton } from "@/components/shared/buttons";
 
 interface HandsOnReferenceProps {
     docId?: string | null;
@@ -174,7 +175,7 @@ const HandsOnReference: React.FC<HandsOnReferenceProps> = ({ docId }) => {
                 }
             }
         };
-        
+
         setIsDisabled(false);
 
         fileReader.readAsDataURL(file);
@@ -821,12 +822,12 @@ const HandsOnReference: React.FC<HandsOnReferenceProps> = ({ docId }) => {
                                         </button>
                                     </div>
                                     <div className="text-right right">
-                                        <button
+                                        <BlackButton
+                                            name="Submit"
                                             type="submit"
-                                            className="bg-[#38313A] px-7 py-5 rounded-md text-white"
-                                        >
-                                            Generate Veridaq
-                                        </button>
+                                            disabled={isDisabled}
+                                            loading={isDisabled}
+                                        />
                                     </div>
                                 </div>
                             </div>

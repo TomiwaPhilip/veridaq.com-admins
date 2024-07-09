@@ -39,6 +39,7 @@ import { WorkReferenceValidation2 } from "@/lib/validations/workreference";
 import { SuccessMessage, ErrorMessage } from "@/components/shared/shared";
 import Image from "next/image";
 import { upload } from "@vercel/blob/client";
+import { BlackButton } from "@/components/shared/buttons";
 
 interface WorkReferenceProps {
   docId?: string | null;
@@ -47,6 +48,7 @@ interface WorkReferenceProps {
 const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
   const [step, setStep] = useState(1);
   const [requestResult, setRequestResult] = useState<boolean | null>(null);
+  const [isDisabled, setIsDisabled] = useState(false);
   const inputFileRef = useRef<HTMLInputElement>(null);
 
   const handleNextStep = () => {
@@ -173,6 +175,7 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
 
   const onSubmit = async (data: z.infer<typeof WorkReferenceValidation2>) => {
     console.log("I want to submit");
+    setIsDisabled(true);
     try {
       const create = await createOrUpdateWorkReferenceRequest({
         firstName: data.firstName,
@@ -207,9 +210,11 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
       if (create) {
         handleNextStep();
       }
+      setIsDisabled(false);
     } catch (error) {
       console.error("Error submitting form:", error);
       setRequestResult(false);
+      setIsDisabled(false);
     }
   };
 
@@ -819,12 +824,12 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
                     </button>
                   </div>
                   <div className="text-right right">
-                    <button
+                    <BlackButton
+                      name="Submit"
                       type="submit"
-                      className="bg-[#38313A] px-7 py-5 rounded-md text-white"
-                    >
-                      Generate Veridaq
-                    </button>
+                      disabled={isDisabled}
+                      loading={isDisabled}
+                    />
                   </div>
                 </div>
               </div>
