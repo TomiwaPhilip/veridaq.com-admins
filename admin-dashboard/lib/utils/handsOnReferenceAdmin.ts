@@ -1,6 +1,6 @@
 import { Schema, model, models } from "mongoose";
 
-const WorkReferenceAdminSchema = new Schema({
+const HandsOnReferenceAdminSchema = new Schema({
   firstName: {
     type: String,
     required: [true, "First Name is required"],
@@ -12,25 +12,21 @@ const WorkReferenceAdminSchema = new Schema({
     minlength: 1,
   },
   middleName: String,
-  employeeType: {
+  roleType: {
     type: String,
     required: [true, "Employee Type is required"],
-    minlength: 1,
   },
   subType: {
     type: String,
     required: [true, "Sub Type is required"],
-    minlength: 1,
   },
-  staffId: {
+  identifier: {
     type: String,
-    required: [true, "Staff ID is required"],
-    minlength: 1,
+    required: [true, "Identifier is required"],
   },
-  designation: {
+  projectTitle: {
     type: String,
-    required: [true, "Designation is required"],
-    minlength: 1,
+    required: [true, "Project Title is required"],
   },
   image: {
     type: String,
@@ -43,16 +39,14 @@ const WorkReferenceAdminSchema = new Schema({
     type: Date,
     default: null,
   },
-  department: {
+  role: {
     type: String,
     required: [true, "Department is required"],
-    minlength: 1,
   },
   notableAchievement: String,
-  jobFunction: {
+  roleResponsibilities: {
     type: String,
-    required: [true, "Job Function is required"],
-    minlength: 1,
+    required: [true, "Role Responsilities is required"],
   },
   personalitySummary: String,
   orgName: {
@@ -85,6 +79,8 @@ const WorkReferenceAdminSchema = new Schema({
   },
   contactName: {
     type: String,
+    required: [true, "Contact Person Name is required"],
+    minlength: 1,
   },
   contactAddress: {
     type: String,
@@ -133,10 +129,6 @@ const WorkReferenceAdminSchema = new Schema({
     type: String,
     default: null,
   },
-  badgeID: {
-    type: String,
-    default: null,
-  },
   issuingAdminDetails: {
     type: Schema.Types.ObjectId,
     ref: "Admin",
@@ -144,8 +136,8 @@ const WorkReferenceAdminSchema = new Schema({
 });
 
 // Create and export the Mongoose model based on the schema
-const WorkReferenceAdmin =
-  models.WorkReferenceAdmin ||
-  model("WorkReferenceAdmin", WorkReferenceAdminSchema);
+const HandsOnReferenceAdmin =
+  models.HandsOnReferenceAdmin ||
+  model("HandsOnReferenceAdmin", HandsOnReferenceAdminSchema);
 
-export default WorkReferenceAdmin;
+export default HandsOnReferenceAdmin;

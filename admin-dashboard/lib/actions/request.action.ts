@@ -15,6 +15,7 @@ import {
 } from "../utils";
 import { getDocAndUpload } from "./server-hooks/requestWithUpload.action";
 import Admin from "../utils/adminSchema";
+import HandsOnReferenceAdmin from "../utils/handsOnReferenceAdmin";
 
 interface Params {
   firstName: string;
@@ -204,6 +205,196 @@ export async function createOrUpdateWorkReferenceRequest({
   } catch (error: any) {
     throw new Error(
       `Failed to save/update WorkReference request: ${error.message}`,
+    );
+  }
+}
+
+interface HandsOnReferenceParams {
+  firstName: string;
+  lastName: string;
+  middleName?: string; // Optional middleName field
+  roleType: string;
+  subType: string;
+  identifier: string;
+  projectTitle: string;
+  image?: string;
+  workStartDate: Date;
+  workEndDate?: Date; // Nullable workEndDate field
+  role: string;
+  notableAchievement?: string; // Optional notableAchievement field
+  roleResponsibilities: string; // Renamed from 'function' to 'jobFunction'
+  personalitySummary?: string; // Optional personalitySummary field
+  id?: string;
+  orgName: string;
+  orgAddress: string;
+  orgPostalCode?: string;
+  orgCountry: string;
+  orgEmail: string;
+  orgPhone: string;
+  contactName: string;
+  contactAddress: string;
+  contactPostalCode?: string;
+  contactCountry: string;
+  contactEmail: string;
+  contactPhone: string;
+}
+
+export async function createOrUpdateHandsOnReferenceRequest({
+  id,
+  firstName,
+  lastName,
+  middleName,
+  roleType,
+  subType,
+  identifier,
+  projectTitle,
+  image,
+  workStartDate,
+  workEndDate,
+  role,
+  notableAchievement,
+  roleResponsibilities, // Changed from 'function' to 'jobFunction'
+  personalitySummary,
+  orgName,
+  orgAddress,
+  orgPostalCode,
+  orgCountry,
+  orgEmail,
+  orgPhone,
+  contactName,
+  contactAddress,
+  contactPostalCode,
+  contactCountry,
+  contactEmail,
+  contactPhone,
+}: HandsOnReferenceParams) {
+  try {
+    // Connect to the database
+    connectToDB();
+
+    console.log(id);
+
+    const session = await getSession();
+
+    const period = concatenateDates(workStartDate, workEndDate);
+    const currentDateTime = getCurrentDateTime();
+    const badgeID = generateVeridaqID();
+
+    // const data = {
+    //   nameOfEmployee: firstName + " " + lastName,
+    //   employeeID: staffId,
+    //   employeeStatus: subType,
+    //   nameOfInstitution: orgName,
+    //   subType: employeeType,
+    //   designation: designation,
+    //   department: department,
+    //   period: period,
+    //   jobFunctions: jobFunction,
+    //   notableAchievement: notableAchievement,
+    //   personalitySummary: personalitySummary,
+    //   nameOfAdmin: contactName,
+    //   adminDesignation: "Admin",
+    //   currentDateTime: currentDateTime,
+    //   badgeID: badgeID,
+    // };
+    // const url = "https://generator-abfcaoddhq-bq.a.run.app/work-reference";
+    // const docName = "workReference.pdf";
+
+    // const result = await getDocAndUpload(data, url, docName);
+    let result;
+    if (result) {
+      // If id is provided, find and update the document
+      if (id) {
+        const workref = await HandsOnReferenceAdmin.findByIdAndUpdate(
+          id,
+          {
+            firstName,
+            lastName,
+            middleName,
+            roleType,
+            subType,
+            identifier,
+            projectTitle,
+            image,
+            workStartDate,
+            workEndDate,
+            role,
+            notableAchievement,
+            roleResponsibilities, // Changed from 'function' to 'jobFunction'
+            personalitySummary,
+            orgName,
+            orgAddress,
+            orgPostalCode,
+            orgCountry,
+            orgEmail,
+            orgPhone,
+            contactName,
+            contactAddress,
+            contactPostalCode,
+            contactCountry,
+            contactEmail,
+            contactPhone,
+            issued: true,
+            dateIssued: new Date(),
+            badgeUrl: result,
+            badgeID: badgeID,
+            issuingAdminDetails: session.userId,
+          },
+          { new: true },
+        );
+        console.log(workref);
+        return true; // Return true if update is successful
+      } else {
+        // If id is not provided, create a new document
+        const session = await getSession();
+
+        if (!session) {
+          throw new Error("Unauthorized");
+        }
+
+        // Create a new WorkReference document
+        const workReference = new HandsOnReferenceAdmin({
+          firstName,
+          lastName,
+          middleName,
+          roleType,
+          subType,
+          identifier,
+          projectTitle,
+          image,
+          workStartDate,
+          workEndDate,
+          role,
+          notableAchievement,
+          roleResponsibilities, // Changed from 'function' to 'jobFunction'
+          personalitySummary,
+          orgName,
+          orgAddress,
+          orgPostalCode,
+          orgCountry,
+          orgEmail,
+          orgPhone,
+          contactName,
+          contactAddress,
+          contactPostalCode,
+          contactCountry,
+          contactEmail,
+          contactPhone,
+          issued: true,
+          dateIssued: new Date(),
+          badgeUrl: result,
+          badgeID: badgeID,
+          issuingAdminDetails: session.userId,
+        });
+
+        // Save the WorkReference document to the database
+        await workReference.save();
+        return true; // Return true if creation is successful
+      }
+    } else return false;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to save/update Hands-On Reference request: ${error.message}`,
     );
   }
 }
@@ -748,6 +939,68 @@ export async function getWorkReferenceById(docId: string) {
   }
 }
 
+export async function getHandsOnReference() {
+  try {
+    const session = await getSession();
+
+    if (!session) {
+      throw new Error("Unauthorized");
+    }
+
+    // Connect to the database
+    connectToDB();
+
+    // Query the WorkReference collection based on orgId
+    const workReferences = await HandsOnReferenceAdmin.find({
+      issued: false,
+    }).select("firstName lastName dateRequested issued");
+
+    console.log(workReferences);
+
+    // console.log(workReferences);
+
+    // Format the data before returning to the frontend
+    const formattedData = workReferences.map((doc) => ({
+      DocDetails: `Hands-On Experience Reference Veridaq Request from ${doc.firstName} ${doc.lastName}`,
+      DocId: doc._id.toString(), // Convert _id to string
+      DocDate: formatDate(doc.dateRequested), // Format the date
+    }));
+
+    if (formattedData) return formattedData;
+  } catch (error: any) {
+    console.error(error);
+    throw new Error("Failed to fetch WorkReference documents");
+  }
+}
+
+export async function getHandsOnReferenceById(docId: string) {
+  try {
+    // Connect to the database
+    connectToDB();
+
+    // Query the WorkReference collection based on the provided docId
+    const workReference = await HandsOnReferenceAdmin.findById(docId);
+
+    if (!workReference) {
+      throw new Error("Document not found");
+    }
+
+    const stringifiedWorkReference = {
+      ...workReference.toObject(),
+      _id: workReference._id.toString(), // Convert _id to string
+      user: workReference.user.toString(),
+      // Convert other ObjectId fields to strings if necessary
+    };
+
+    // console.log(stringifiedWorkReference);
+
+    return stringifiedWorkReference;
+  } catch (error: any) {
+    console.error(error);
+    throw new Error(`Failed to fetch WorkReference document with ID: ${docId}`);
+  }
+}
+
 export async function getDocVerification() {
   try {
     const session = await getSession();
@@ -962,6 +1215,41 @@ export async function getIssuedWorkReference() {
     throw new Error("Failed to fetch issued WorkReference documents");
   }
 }
+
+export async function getIssuedHandsOnReference() {
+  try {
+    const session = await getSession();
+
+    if (!session) {
+      throw new Error("Unauthorized");
+    }
+
+    // Connect to the database
+    connectToDB();
+
+    // Query the WorkReference collection based on orgId
+    const workReferences = await HandsOnReferenceAdmin.find({
+      issued: true,
+    }).select("firstName lastName badgeUrl");
+
+    // Format the data before returning to the frontend
+    const formattedData = workReferences.map((doc) => ({
+      heading: `Hands-On Experience Reference Veridaq to ${doc.firstName} ${doc.lastName}`,
+      DocId: doc._id.toString(), // Convert _id to string
+      link: doc.badgeUrl,
+      textColor: "#38313A",
+      bgColor: "#F4DBE4",
+      outlineColor: "#897A8B",
+    }));
+
+    if (formattedData) return formattedData;
+    false;
+  } catch (error: any) {
+    console.error(error);
+    throw new Error("Failed to fetch issued WorkReference documents");
+  }
+}
+
 
 export async function getIssuedMemberReference() {
   try {
