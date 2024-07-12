@@ -87,3 +87,29 @@ export const MotionWithStagger = ({
     </motion.div>
   )
 }
+
+interface ScalePropsI extends Omit<PropsI, "initialY"> {
+  initialScale?: number
+}
+
+export const ZoomInMotion = ({
+  children,
+  duration,
+  delay,
+  initialScale,
+  ...props
+}: ScalePropsI) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0.5, scale: initialScale, zIndex: -1 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: duration || 1, delay: delay || 0 }}
+      className={props.className}
+      id={props.id}
+      style={props.style}
+      ref={props.ref}
+    >
+      {children}
+    </motion.div>
+  )
+}
