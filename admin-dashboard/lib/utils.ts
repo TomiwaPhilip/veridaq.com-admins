@@ -20,7 +20,7 @@ interface SendVerificationRequestParams {
   email: string;
 }
 export const sendVerificationRequest = async (
-  params: SendVerificationRequestParams,
+  params: SendVerificationRequestParams
 ) => {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY!);
@@ -106,7 +106,7 @@ export function generateToken(): {
 // Function to verify a token
 export function verifyToken(
   providedToken: string,
-  storedToken: string,
+  storedToken: string
 ): boolean {
   // Hash the provided token
   const hashedProvidedToken = hashToken(providedToken);
@@ -150,7 +150,7 @@ export function getCurrentDateTime(): string {
 
   // Convert UTC time to local time zone
   const localDate = new Date(
-    currentDate.getTime() - currentDate.getTimezoneOffset() * 60000,
+    currentDate.getTime() - currentDate.getTimezoneOffset() * 60000
   );
 
   // Get day, month, and year
@@ -167,8 +167,12 @@ export function getCurrentDateTime(): string {
   hours = hours % 12 || 12;
 
   // Format day, month, year, hours, and minutes
-  const formattedDate = `${day < 10 ? "0" : ""}${day}-${month < 10 ? "0" : ""}${month}-${year}`;
-  const formattedTime = `${hours}:${minutes < 10 ? "0" : ""}${minutes}${amOrPm}`;
+  const formattedDate = `${day < 10 ? "0" : ""}${day}-${
+    month < 10 ? "0" : ""
+  }${month}-${year}`;
+  const formattedTime = `${hours}:${
+    minutes < 10 ? "0" : ""
+  }${minutes}${amOrPm}`;
 
   // Return formatted date and time
   return `${formattedDate} ${formattedTime}`;
