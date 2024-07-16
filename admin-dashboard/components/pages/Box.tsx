@@ -1,38 +1,39 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import React, { useState, useEffect } from "react";
-import { RiLoader4Line } from "react-icons/ri";
+import Image from "next/image"
+import React, { useState, useEffect } from "react"
+import { RiLoader4Line } from "react-icons/ri"
 
-import ModalWithStepper from "@/components/shared/Modal";
-import { SearchBar2, VeridaqDocument } from "@/components/shared/shared";
+import ModalWithStepper from "@/components/shared/Modal"
+import { SearchBar2, VeridaqDocument } from "@/components/shared/shared"
 import {
   getWorkReference,
   getDocVerification,
   getMemberReference,
   getStudentshipStatus,
-} from "@/lib/actions/request.action";
+} from "@/lib/actions/request.action"
+import { BaseFramerAnimation } from "../shared/Animations"
 
 export default function Box() {
   interface Documents {
-    DocDetails: string;
-    DocId: string;
-    DocDate: string;
+    DocDetails: string
+    DocId: string
+    DocDate: string
   }
 
-  const [openModalId, setOpenModalId] = useState<string | null>(null);
-  const [openModalDocId, setOpenModalDocId] = useState<string | null>(null);
-  const [workReferenceDoc, setWorkReferenceDoc] = useState<Documents[]>([]);
+  const [openModalId, setOpenModalId] = useState<string | null>(null)
+  const [openModalDocId, setOpenModalDocId] = useState<string | null>(null)
+  const [workReferenceDoc, setWorkReferenceDoc] = useState<Documents[]>([])
   // const [memberReferenceDoc, setMemberReferenceDoc] = useState<Documents[]>([]);
   // const [docVerificationDoc, setDocVerificationDoc] = useState<Documents[]>([]);
   // const [studentStatusDoc, setStudentStatusDoc] = useState<Documents[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const doc1 = await getWorkReference();
-        if (doc1) setWorkReferenceDoc(doc1);
+        const doc1 = await getWorkReference()
+        if (doc1) setWorkReferenceDoc(doc1)
 
         // const doc2 = await getMemberReference();
         // if (doc2) setMemberReferenceDoc(doc2);
@@ -42,23 +43,23 @@ export default function Box() {
 
         // const doc4 = await getStudentshipStatus();
         // if (doc4) setStudentStatusDoc(doc4);
-        setIsLoading(false);
+        setIsLoading(false)
       } catch (error) {
-        console.error("Error fetching documents:", error);
+        console.error("Error fetching documents:", error)
       }
-    };
+    }
 
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   const handleOpenModal = (id: string, docId: string) => {
-    setOpenModalId(id);
-    setOpenModalDocId(docId);
-  };
+    setOpenModalId(id)
+    setOpenModalDocId(docId)
+  }
 
   const handleCloseModal = () => {
-    setOpenModalId(null);
-  };
+    setOpenModalId(null)
+  }
 
   // TODO: Implement endless scrolling and fallback for not-found
 
@@ -79,20 +80,21 @@ export default function Box() {
               </div>
               <div className="mt-10 overflow-auto">
                 {!isLoading ? (
-                  <>
-                    {workReferenceDoc.length > 0 ? (
-                      <>
-                        {workReferenceDoc.map((doc: Documents) => (
-                          <VeridaqDocument
-                            key={doc.DocId}
-                            DocDetails={doc.DocDetails}
-                            DocDate={doc.DocDate}
-                            docId={doc.DocId}
-                            id="1"
-                            onClick={handleOpenModal}
-                          />
-                        ))}
-                        {/* {memberReferenceDoc.map((doc: Documents) => (
+                  <BaseFramerAnimation>
+                    <>
+                      {workReferenceDoc.length > 0 ? (
+                        <>
+                          {workReferenceDoc.map((doc: Documents) => (
+                            <VeridaqDocument
+                              key={doc.DocId}
+                              DocDetails={doc.DocDetails}
+                              DocDate={doc.DocDate}
+                              docId={doc.DocId}
+                              id="1"
+                              onClick={handleOpenModal}
+                            />
+                          ))}
+                          {/* {memberReferenceDoc.map((doc: Documents) => (
                           <VeridaqDocument
                             key={doc.DocId}
                             DocDetails={doc.DocDetails}
@@ -122,21 +124,22 @@ export default function Box() {
                             onClick={handleOpenModal}
                           />
                         ))} */}
-                      </>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <Image
-                          src="/assets/images/error.png"
-                          alt="No Document Found"
-                          width={200}
-                          height={200}
-                        />
-                        <p className="text-center mt-2">
-                          You have no Documents yet!
-                        </p>
-                      </div>
-                    )}
-                  </>
+                        </>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center h-full">
+                          <Image
+                            src="/assets/images/error.png"
+                            alt="No Document Found"
+                            width={200}
+                            height={200}
+                          />
+                          <p className="text-center mt-2">
+                            You have no Documents yet!
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  </BaseFramerAnimation>
                 ) : (
                   <div className="flex items-center justify-center h-full">
                     <RiLoader4Line className="animate-spin text-2xl mb-4" />
@@ -155,5 +158,5 @@ export default function Box() {
         />
       )}
     </main>
-  );
+  )
 }

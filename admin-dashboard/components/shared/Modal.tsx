@@ -3,6 +3,7 @@
 import React, { useState } from "react"
 import StepperForm from "./Stepper"
 import { RiCloseCircleFill } from "react-icons/ri"
+import { ZoomInMotion } from "./Animations"
 
 interface ModalWithStepperProps {
   id: string
@@ -21,12 +22,18 @@ const ModalWithStepper: React.FC<ModalWithStepperProps> = ({
       onClick={onClose}
     >
       <div
-        className="bg-white shadow-lg w-[100vw] overflow-auto md:mx-0 md:w-[100vw] h-[100vh] pt-10"
+        className="shadow-lg w-[100vw] md:mx-0 md:w-[100vw]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="md:max-w-[60%] mx-auto mb-16">
-          <StepperForm id={id} docId={docId} />
-        </div>
+        <ZoomInMotion
+          initialScale={0.5}
+          duration={0.2}
+          className="bg-white overflow-scroll w-full h-[100vh] pt-10 pb-[10rem]"
+        >
+          <div className=" md:max-w-[60%] mx-auto">
+            <StepperForm id={id} docId={docId} />
+          </div>
+        </ZoomInMotion>
         <div>
           <RiCloseCircleFill
             className="text-violet-400 text-3xl cursor-pointer absolute top-7 right-7 z-[20]"
