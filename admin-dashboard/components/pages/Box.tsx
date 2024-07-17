@@ -13,6 +13,7 @@ import {
   getStudentshipStatus,
 } from "@/lib/actions/request.action"
 import { BaseFramerAnimation } from "../shared/Animations"
+import InfiniteScroll from "react-infinite-scroll-component"
 
 export default function Box() {
   interface Documents {
@@ -29,11 +30,29 @@ export default function Box() {
   // const [studentStatusDoc, setStudentStatusDoc] = useState<Documents[]>([]);
   const [isLoading, setIsLoading] = useState(true)
 
+  const [workReferencesState, setworkReferencesState] = useState<Documents[]>(
+    []
+  )
+  const [hasMore, setHasMore] = useState(true)
+
+  const fetchMoreData = () => {
+    setTimeout(() => {
+      setworkReferencesState(
+        workReferenceDoc.slice(0, workReferencesState.length + 1)
+      )
+    }, 200)
+    if (workReferencesState.length === workReferenceDoc.length)
+      setHasMore(false)
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const doc1 = await getWorkReference()
-        if (doc1) setWorkReferenceDoc(doc1)
+        if (doc1) {
+          setWorkReferenceDoc(doc1)
+          setworkReferencesState(doc1.slice(0, 10))
+        }
 
         // const doc2 = await getMemberReference();
         // if (doc2) setMemberReferenceDoc(doc2);
@@ -82,9 +101,19 @@ export default function Box() {
                 {!isLoading ? (
                   <BaseFramerAnimation>
                     <>
-                      {workReferenceDoc.length > 0 ? (
-                        <>
-                          {workReferenceDoc.map((doc: Documents) => (
+                      <InfiniteScroll
+                        dataLength={workReferencesState.length}
+                        next={fetchMoreData}
+                        hasMore={hasMore}
+                        loader={
+                          <div className="flex items-center justify-center h-full">
+                            <RiLoader4Line className="animate-spin text-2xl mb-4" />
+                            <p>Loading...</p>
+                          </div>
+                        }
+                      >
+                        {workReferencesState.length > 0 ? (
+                          workReferencesState.map((doc: Documents) => (
                             <VeridaqDocument
                               key={doc.DocId}
                               DocDetails={doc.DocDetails}
@@ -93,8 +122,35 @@ export default function Box() {
                               id="1"
                               onClick={handleOpenModal}
                             />
-                          ))}
-                          {/* {memberReferenceDoc.map((doc: Documents) => (
+                          ))
+                        ) : (
+                          <div className="flex flex-col items-center justify-center h-full">
+                            <Image
+                              src="/assets/images/error.png"
+                              alt="No Document Found"
+                              width={200}
+                              height={200}
+                            />
+                            <p className="text-center mt-2">
+                              You have no Documents yet!
+                            </p>
+                          </div>
+                        )}
+                      </InfiniteScroll>
+                      {/* <div>
+                        {workReferenceDoc.length > 0 ? (
+                          <>
+                            {workReferenceDoc.map((doc: Documents) => (
+                              <VeridaqDocument
+                                key={doc.DocId}
+                                DocDetails={doc.DocDetails}
+                                DocDate={doc.DocDate}
+                                docId={doc.DocId}
+                                id="1"
+                                onClick={handleOpenModal}
+                              />
+                            ))}
+                            {memberReferenceDoc.map((doc: Documents) => (
                           <VeridaqDocument
                             key={doc.DocId}
                             DocDetails={doc.DocDetails}
@@ -123,21 +179,22 @@ export default function Box() {
                             id="2"
                             onClick={handleOpenModal}
                           />
-                        ))} */}
-                        </>
-                      ) : (
-                        <div className="flex flex-col items-center justify-center h-full">
-                          <Image
-                            src="/assets/images/error.png"
-                            alt="No Document Found"
-                            width={200}
-                            height={200}
-                          />
-                          <p className="text-center mt-2">
-                            You have no Documents yet!
-                          </p>
-                        </div>
-                      )}
+                        ))}
+                          </>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center h-full">
+                            <Image
+                              src="/assets/images/error.png"
+                              alt="No Document Found"
+                              width={200}
+                              height={200}
+                            />
+                            <p className="text-center mt-2">
+                              You have no Documents yet!
+                            </p>
+                          </div>
+                        )}
+                      </div> */}
                     </>
                   </BaseFramerAnimation>
                 ) : (
