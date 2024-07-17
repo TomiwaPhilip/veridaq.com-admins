@@ -40,7 +40,7 @@ export default function Box() {
       setworkReferencesState(
         workReferenceDoc.slice(0, workReferencesState.length + 1)
       )
-    }, 200)
+    })
     if (workReferencesState.length === workReferenceDoc.length)
       setHasMore(false)
   }
@@ -95,7 +95,24 @@ export default function Box() {
           <div className="">
             <div className="p-7 bg-[#C3B8D8] rounded-lg h-full mb-[5rem]">
               <div className="">
-                <SearchBar2 />
+                <SearchBar2
+                  onChange={(e) => {
+                    const value = e.target.value.toLowerCase()
+
+                    // Work Reference Search
+                    const newWorkRefData = workReferenceDoc.filter(
+                      (workRef) => {
+                        return workRef.DocDetails.toLowerCase().includes(value)
+                      }
+                    )
+                    setworkReferencesState(newWorkRefData)
+                    setHasMore(false)
+                    if (value === "") {
+                      setworkReferencesState(workReferenceDoc.slice(0, 10))
+                      setHasMore(true)
+                    }
+                  }}
+                />
               </div>
               <div className="mt-10 overflow-auto">
                 {!isLoading ? (
