@@ -6,7 +6,6 @@ import { RiLoader4Line } from "react-icons/ri"
 import { getUserDoc } from "@/lib/actions/request.action"
 import { BaseFramerAnimation } from "../shared/Animations"
 import InfiniteScroll from "react-infinite-scroll-component"
-import { Loader } from "lucide-react"
 
 export default function HomePage() {
   interface Documents {
@@ -22,8 +21,9 @@ export default function HomePage() {
   const fetchMoreData = () => {
     setTimeout(() => {
       setUsers(userDoc.slice(0, users.length + 1))
-    }, 200)
+    })
     if (users.length === userDoc.length) setHasMore(false)
+    else setHasMore(true)
   }
 
   useEffect(() => {
@@ -52,7 +52,24 @@ export default function HomePage() {
         </p>
       </div>
       <div className="my-5">
-        <SearchBar />
+        <SearchBar
+          onChange={(e) => {
+            const value = e.target.value.toLowerCase()
+
+            // Work Reference Search
+            const newUserDocData = userDoc.filter((userDoc) => {
+              return userDoc.userName.toLowerCase().includes(value)
+            })
+            setUsers(newUserDocData)
+            setHasMore(false)
+            if (value === "") {
+              setUsers(userDoc.slice(0, 10))
+              if (userDoc.length > 10) {
+                setHasMore(true)
+              }
+            }
+          }}
+        />
       </div>
       <div className="justify-center mt-[40px] mb-[5rem]">
         {!isLoading ? (

@@ -14,6 +14,7 @@ import {
   getIssuedWorkReference,
 } from "@/lib/actions/request.action"
 import { BaseFramerAnimation } from "../shared/Animations"
+import InfiniteScroll from "react-infinite-scroll-component"
 
 export default function Store() {
   interface Documents {
@@ -34,14 +35,34 @@ export default function Store() {
   const session = useSession()
   const [isLoading, setIsLoading] = useState(true)
 
+  const [allDocsState, setAllDocsState] = useState<Documents[]>([])
+  const [hasMore, setHasMore] = useState(true)
+
+  const fetchMoreData = () => {
+    const allData = [...workReferenceDoc, ...handsOnReferenceDoc]
+    setTimeout(() => {
+      setAllDocsState(allData.slice(0, allDocsState.length + 1))
+    })
+
+    if (allDocsState.length === allData.length) {
+      setHasMore(false)
+    } else setHasMore(true)
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const doc1 = await getIssuedWorkReference()
-        if (doc1) setWorkReferenceDoc(doc1)
+        if (doc1) {
+          setWorkReferenceDoc(doc1)
+          setAllDocsState(doc1.slice(0, 6))
+        }
 
         const doc2 = await getIssuedHandsOnReference()
-        if (doc2) setHandsOnReferenceDoc(doc2)
+        if (doc2) {
+          setHandsOnReferenceDoc(doc2)
+          setAllDocsState((prev) => [...prev, ...doc2.slice(0, 6)])
+        }
 
         // const doc3 = await getIssuedDocVerification();
         // if (doc3) setDocVerificationDoc(doc3);
@@ -60,35 +81,67 @@ export default function Store() {
   return (
     <main className="mt-[60px] mb-[5rem]">
       <div className="">
-        <SearchBar />
+        <SearchBar
+          onChange={(e) => {
+            const value = e.target.value.toLowerCase()
+
+            // Work Reference Search
+            const newWorkRefData = workReferenceDoc.filter((workRef) => {
+              return workRef.heading.toLowerCase().includes(value)
+            })
+            // Hands On Search
+            const newHandsOnData = handsOnReferenceDoc.filter((handsOn) => {
+              return handsOn.heading.toLowerCase().includes(value)
+            })
+            setAllDocsState([...newWorkRefData, ...newHandsOnData])
+            setHasMore(false)
+            if (value === "") {
+              setAllDocsState([
+                ...workReferenceDoc.slice(0, 6),
+                ...handsOnReferenceDoc.slice(0, 6),
+              ])
+              if ([...workReferenceDoc, ...handsOnReferenceDoc].length > 12) {
+                setHasMore(true)
+              }
+            }
+          }}
+        />
       </div>
       {!isLoading ? (
         <BaseFramerAnimation>
           <>
-            {workReferenceDoc.length > 0 ? (
-              <div className="mt-10 overflow-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-center">
-                {/* Render cards for each type of document */}
-                {workReferenceDoc.map((doc: Documents) => (
+            <InfiniteScroll
+              dataLength={allDocsState.length}
+              next={fetchMoreData}
+              hasMore={hasMore}
+              loader={<></>}
+            >
+              {allDocsState.length > 0 ? (
+                <>
+                  {/* Render cards for each type of document */}
+                  <div className="mt-10 overflow-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-center">
+                    {allDocsState.map((doc: Documents) => (
+                      <Card3
+                        key={doc.DocId} // Ensure each Card component has a unique key
+                        heading={doc.heading}
+                        textColor={doc.textColor}
+                        bgColor={doc.bgColor}
+                        outlineColor={doc.outlineColor}
+                        link={doc.link}
+                      />
+                    ))}
+
+                    {/* {handsOnReferenceDoc.map((doc: Documents) => (
                   <Card3
-                    key={doc.DocId} // Ensure each Card component has a unique key
-                    heading={doc.heading}
-                    textColor={doc.textColor}
-                    bgColor={doc.bgColor}
-                    outlineColor={doc.outlineColor}
-                    link={doc.link}
+                  key={doc.DocId} // Ensure each Card component has a unique key
+                  heading={doc.heading}
+                  textColor={doc.textColor}
+                  bgColor={doc.bgColor}
+                  outlineColor={doc.outlineColor}
+                  link={doc.link}
                   />
-                ))}
-                {handsOnReferenceDoc.map((doc: Documents) => (
-                  <Card3
-                    key={doc.DocId} // Ensure each Card component has a unique key
-                    heading={doc.heading}
-                    textColor={doc.textColor}
-                    bgColor={doc.bgColor}
-                    outlineColor={doc.outlineColor}
-                    link={doc.link}
-                  />
-                ))}
-                {/* {docVerificationDoc.map((doc: Documents) => (
+                  ))} */}
+                    {/* {docVerificationDoc.map((doc: Documents) => (
                 <Card3
                   key={doc.DocId} // Ensure each Card component has a unique key
                   heading={doc.heading}
@@ -96,30 +149,32 @@ export default function Store() {
                   bgColor={doc.bgColor}
                   outlineColor={doc.outlineColor}
                   link={doc.link}
-                />
-              ))}
-              {studentStatusDoc.map((doc: Documents) => (
-                <Card3
-                  key={doc.DocId} // Ensure each Card component has a unique key
-                  heading={doc.heading}
-                  textColor={doc.textColor}
-                  bgColor={doc.bgColor}
-                  outlineColor={doc.outlineColor}
-                  link={doc.link}
-                />
-              ))} */}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full mt-[3rem]">
-                <Image
-                  src="/assets/images/error.png"
-                  alt="No Document Found"
-                  width={200}
-                  height={200}
-                />
-                <p className="text-center mt-2">You have no Documents yet!</p>
-              </div>
-            )}
+                  />
+                  ))}
+                  {studentStatusDoc.map((doc: Documents) => (
+                    <Card3
+                    key={doc.DocId} // Ensure each Card component has a unique key
+                    heading={doc.heading}
+                    textColor={doc.textColor}
+                    bgColor={doc.bgColor}
+                    outlineColor={doc.outlineColor}
+                    link={doc.link}
+                    />
+                    ))} */}
+                  </div>
+                </>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full mt-[3rem]">
+                  <Image
+                    src="/assets/images/error.png"
+                    alt="No Document Found"
+                    width={200}
+                    height={200}
+                  />
+                  <p className="text-center mt-2">You have no Documents yet!</p>
+                </div>
+              )}
+            </InfiniteScroll>
           </>
         </BaseFramerAnimation>
       ) : (
