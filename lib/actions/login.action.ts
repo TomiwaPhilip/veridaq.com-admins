@@ -19,7 +19,7 @@ export async function signIn(email: string) {
     // Generate token and URL for verification
     const { token, generatedAt, expiresIn } = generateToken();
 
-    const url = `http://localhost:3000/auth/verify?token=${token}`;
+    const url = `http://admin.veridaq.com/auth/verify?token=${token}`;
 
     // Send email with resend.dev
     await sendVerificationRequest({ url: url, email: email });
