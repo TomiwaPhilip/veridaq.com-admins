@@ -107,7 +107,7 @@ export async function createOrUpdateWorkReferenceRequest({
       currentDateTime: currentDateTime,
       badgeID: badgeID,
     };
-    const url = "https://generator-abfcaoddhq-bq.a.run.app/work-reference";
+    const url = "https://api.generator.veridaq.com/work-reference";
     const docName = "workReference.pdf";
 
     const result = await getDocAndUpload(data, url, docName);
@@ -280,28 +280,29 @@ export async function createOrUpdateHandsOnReferenceRequest({
     const currentDateTime = getCurrentDateTime();
     const badgeID = generateVeridaqID();
 
-    // const data = {
-    //   nameOfEmployee: firstName + " " + lastName,
-    //   employeeID: staffId,
-    //   employeeStatus: subType,
-    //   nameOfInstitution: orgName,
-    //   subType: employeeType,
-    //   designation: designation,
-    //   department: department,
-    //   period: period,
-    //   jobFunctions: jobFunction,
-    //   notableAchievement: notableAchievement,
-    //   personalitySummary: personalitySummary,
-    //   nameOfAdmin: contactName,
-    //   adminDesignation: "Admin",
-    //   currentDateTime: currentDateTime,
-    //   badgeID: badgeID,
-    // };
-    // const url = "https://generator-abfcaoddhq-bq.a.run.app/work-reference";
-    // const docName = "workReference.pdf";
+    const data = {
+      nameOfEmployee: firstName + " " + lastName,
+      identifier: identifier,
+      roleType: roleType,
+      nameOfInstitution: orgName,
+      subType: subType,
+      projectTitle: projectTitle,
+      role: role,
+      period: period,
+      jobFunctions: roleResponsibilities,
+      notableAchievement: notableAchievement,
+      personalitySummary: personalitySummary,
+      nameOfAdmin: contactName,
+      adminDesignation: "Admin",
+      currentDateTime: currentDateTime,
+      badgeID: badgeID,
+    };
 
-    // const result = await getDocAndUpload(data, url, docName);
-    let result;
+    const url = "https://api.generator.veridaq.com/work-reference";
+    const docName = "workReference.pdf";
+
+    const result = await getDocAndUpload(data, url, docName);
+
     if (result) {
       // If id is provided, find and update the document
       if (id) {
@@ -1249,7 +1250,6 @@ export async function getIssuedHandsOnReference() {
     throw new Error("Failed to fetch issued WorkReference documents");
   }
 }
-
 
 export async function getIssuedMemberReference() {
   try {

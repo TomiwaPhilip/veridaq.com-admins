@@ -40,6 +40,7 @@ import { SuccessMessage, ErrorMessage } from "@/components/shared/shared";
 import Image from "next/image";
 import { upload } from "@vercel/blob/client";
 import { BlackButton } from "@/components/shared/buttons";
+import { Textarea } from "@/components/ui/textarea";
 
 interface WorkReferenceProps {
   docId?: string | null;
@@ -532,11 +533,14 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
                     name="notableAchievement"
                     render={({ field }) => (
                       <FormItem className="w-full">
-                        <FormLabel className="font-medium text-[16px]">
-                          Notable Achievement
-                        </FormLabel>
+                        <FormLabel>Notable Achievement</FormLabel>
                         <FormControl>
-                          <Input placeholder="Permanent" {...field} />
+                          <Textarea
+                            placeholder="Notable Achievement"
+                            id="notableAchievement"
+                            className="flex h-12 w-full normal-border bg-[#C3B8D8] pt-10 rounded-lg px-1 py-3 placeholder:text-gray-500 text-left disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-950"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -547,11 +551,14 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
                     name="jobFunction"
                     render={({ field }) => (
                       <FormItem className="w-full">
-                        <FormLabel className="font-medium text-[16px]">
-                          Function
-                        </FormLabel>
+                        <FormLabel>Job Functions</FormLabel>
                         <FormControl>
-                          <Input placeholder="Function" {...field} />
+                          <Textarea
+                            placeholder="Job Functions"
+                            id="jobFunction"
+                            className="flex h-12 w-full normal-border bg-[#C3B8D8] pt-10 rounded-lg px-1 py-3 placeholder:text-gray-500 text-left disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-950"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -562,11 +569,14 @@ const WorkReference: React.FC<WorkReferenceProps> = ({ docId }) => {
                     name="personalitySummary"
                     render={({ field }) => (
                       <FormItem className="w-full">
-                        <FormLabel className="font-medium text-[16px]">
-                          Personality Summary
-                        </FormLabel>
+                        <FormLabel>Personality Summary</FormLabel>
                         <FormControl>
-                          <Input placeholder="Good" {...field} />
+                          <Textarea
+                            placeholder="Personality Summary"
+                            id="personalitySummary"
+                            className="flex h-12 w-full normal-border bg-[#C3B8D8] pt-10 rounded-lg px-1 py-3 placeholder:text-gray-500 text-left disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-950"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
